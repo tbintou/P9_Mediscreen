@@ -1,0 +1,267 @@
+package com.bintou.mediscreen.controller;
+
+import com.bintou.mediscreen.MediscreenApplication;
+import com.bintou.mediscreen.model.Patient;
+import com.bintou.mediscreen.service.PatientService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
+@AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.MOCK, classes={ MediscreenApplication.class })
+public class PatientControllerTest {
+
+    private Patient patient = new Patient();
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    private PatientService mockPatientService;
+
+    @BeforeAll
+    public void setUp(){
+        this.mockMvc = webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+    public void savePatientTest() throws Exception {
+        String birthdateStr = "1945-06-24";
+        Date birthdate = parseDate(birthdateStr);
+
+        patient.setId(3L);
+        patient.setFirstName("Jean");
+        patient.setLastName("Batis");
+        patient.setBirthDate(birthdate);
+        patient.setGender("F");
+
+        when(mockPatientService.savePatient(any(Patient.class))).thenReturn(patient);
+        mockMvc.perform(post("/api/patients/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(patient))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.firstName").value("Jean"));
+    }
+
+    @Test
+    public void findPatientByIdTest() throws Exception {
+        String birthDateStr = "1945-06-24";
+        Date birthDate = parseDate(birthDateStr);
+        Patient patient = new Patient();
+        patient.setId(200L);
+        patient.setLastName("aaaaa");
+        patient.setFirstName("bbb");
+        patient.setBirthDate(birthDate);
+        patient.setAdress("2 High St");
+        patient.setGender("F");
+        patient.setPhone("200-333-4444");
+
+        when(mockPatientService.findPatientById(200L)).thenReturn(patient);
+        mockMvc.perform(get("/api/patients/200")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.firstName").value("bbb"));
+    }
+
+    @Test
+    public void findPatientByIdBadRequestTest() throws Exception {
+        when(mockPatientService.findPatientById(81L)).thenReturn(null);
+        mockMvc.perform(get("/api/patients/41"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void findPatientByLastNameTest() throws Exception {
+        String birthDateStr = "1945-06-24";
+        Date birthDate = parseDate(birthDateStr);
+        Patient patient1 = new Patient();
+        patient1.setId(52L);
+        patient1.setFirstName("Batis");
+        patient1.setLastName("Bertrand");
+        patient1.setBirthDate(birthDate);
+        patient1.setAdress("2 Rue St");
+        patient1.setGender("M");
+        patient1.setPhone("600-555-888");
+
+        Patient patient2 = new Patient();
+        patient2.setId(34L);
+        patient2.setFirstName("Alex");
+        patient2.setLastName("Bertrand");
+        patient2.setBirthDate(birthDate);
+        patient2.setAdress("2 Rue St");
+        patient2.setGender("M");
+        patient2.setPhone("400-111-999");
+
+        List<Patient> patientList = new ArrayList<>();
+        patientList.add(patient1);
+        patientList.add(patient2);
+
+        when(mockPatientService.findPatientByLastName("Bertrand")).thenReturn(patientList);
+        mockMvc.perform(get("/api/patients/family")
+                        .param("lastName", "Bertrand")
+                        .contentType(MediaType.ALL))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$..*").isNotEmpty())
+                .andExpect(jsonPath("$.[0].firstName").value("Batis"))
+                .andExpect(jsonPath("$.[1].firstName").value("Alex"));
+    }
+
+    @Test
+    public void findListPatientIsEmpty() throws Exception {
+        when(mockPatientService.findPatientByLastName("ddd")).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("/api/patients/family")
+                        .param("lastName", "ddd")
+                        .contentType(MediaType.ALL))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void updatePatientTest() throws Exception {
+        String birthDateStr = "2000-06-24";
+        Date birthDate = parseDate(birthDateStr);
+        Patient updatePatient = new Patient();
+        updatePatient.setId(4L);
+        updatePatient.setFirstName("Jean");
+        updatePatient.setLastName("Batis");
+        updatePatient.setBirthDate(birthDate);
+        updatePatient.setAdress("2 Avenue St");
+        updatePatient.setGender("M");
+        updatePatient.setPhone("5111-222-6666");
+
+        when(mockPatientService.updatePatient(4L, updatePatient)).thenReturn(updatePatient);
+        mockMvc.perform(put("/api/patients/update/4")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(updatePatient))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updatePatientBadRequestTest() throws Exception {
+        String birthDateStr = "1945-06-24";
+        Date birthDate = parseDate(birthDateStr);
+        Patient updatePatient = new Patient();
+        updatePatient.setId(0L);
+        updatePatient.setLastName("Boole");
+        updatePatient.setFirstName("Clarisse");
+        updatePatient.setBirthDate(birthDate);
+        updatePatient.setAdress("9 Avenue St");
+        updatePatient.setGender("F");
+        updatePatient.setPhone("5111-222-6666");
+
+        when(mockPatientService.updatePatient(0L, updatePatient)).thenReturn(updatePatient);
+        mockMvc.perform(put("/api/patients/update/0")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void findAllPatientsTest() throws Exception {
+        String birthDateStr = "1945-06-24";
+        Date birthDate = parseDate(birthDateStr);
+        Patient patient1 = new Patient();
+        patient1.setId(52L);
+        patient1.setFirstName("Batis");
+        patient1.setLastName("Bertrand");
+        patient1.setBirthDate(birthDate);
+        patient1.setAdress("2 Rue St");
+        patient1.setGender("F");
+        patient1.setPhone("600-555-888");
+
+        Patient patient2 = new Patient();
+        patient2.setId(34L);
+        patient2.setFirstName("Alex");
+        patient2.setLastName("Bertrand");
+        patient2.setBirthDate(birthDate);
+        patient2.setAdress("2 Rue St");
+        patient2.setGender("M");
+        patient2.setPhone("400-111-999");
+
+        List<Patient> patientList = new ArrayList<>();
+        patientList.add(patient1);
+        patientList.add(patient2);
+
+        when(mockPatientService.findAllPatients()).thenReturn(patientList);
+        mockMvc.perform(get("/api/patients")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$..*").isNotEmpty())
+                .andExpect(jsonPath("$.[0].firstName").value("Batis"))
+                .andExpect(jsonPath("$.[1].firstName").value("Alex"));
+    }
+
+    @Test
+    public void deletePatientByIdTest() throws Exception {
+        when(mockPatientService.deletePatientById(0L)).thenReturn(true);
+        mockMvc.perform(delete("/api/patients/0")
+                        .contentType(MediaType.ALL))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void findPatientByIdNotFound() throws Exception {
+        when(mockPatientService.findPatientById(198L)).thenReturn(null);
+        mockMvc.perform(get("/api/patient/198")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void findPatientByLastNameStatusOK() throws Exception {
+        when(mockPatientService.findPatientByLastName("fff")).thenReturn(null);
+        mockMvc.perform(get("/api/patients")
+                        .param("lastName", "fff")
+                        .contentType(MediaType.ALL))
+                .andExpect(status().isNoContent());
+    }
+
+
+    public static String asJsonString(final Object obj) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final String jsonContent = mapper.writeValueAsString(obj);
+            return jsonContent;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Date parseDate(String myDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(myDate);
+        long timeInMillis = date.getTime();
+        return new Date(timeInMillis);
+    }
+
+}
