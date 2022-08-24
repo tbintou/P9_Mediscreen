@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface NoteService {
 
-    Note saveNote (Note notes);
+    Note saveNote (Note note);
     Note findNoteById (Long id);
     List<Note> findNoteByLastNameAndFirstName(String patientLastName, String patientFirstName);
     Note updateNote(Long id, Note note);

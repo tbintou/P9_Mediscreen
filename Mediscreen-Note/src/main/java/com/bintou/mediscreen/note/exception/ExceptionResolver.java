@@ -16,18 +16,15 @@ import java.util.Map;
 @ControllerAdvice
 public class ExceptionResolver {
 
-    /*
-    Controller exception bad request
-     */
     @ExceptionHandler
-    public ResponseEntity handlerValidationException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<Object> handlerValidationException(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
         exception.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

@@ -2,7 +2,7 @@ package com.bintou.mediscreen.note.config;
 
 
 
-/*import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -11,12 +11,12 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.Collections;*/
+import java.util.Collections;
 
-//@Configuration
+@Configuration
 public class SpringFoxConfig {
 
-   /* @Bean
+    @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
@@ -34,5 +34,5 @@ public class SpringFoxConfig {
                 "http://www.mediscreen.com/tos",
                 new Contact("Bintou", "www.mediscreen.com", "myaddress@mediscreen.com"),
                 "License de API", "http://www.mediscreen.com/license", Collections.emptyList());
-    }*/
+    }
 }

@@ -9,7 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,8 +20,6 @@ import java.time.LocalDateTime;
 @Document(collection = "note")
 public class Note {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Field(value = "patientId")
@@ -31,11 +31,12 @@ public class Note {
     @Field(value = "firstName")
     private String patientFirstName;
 
+    @NotBlank(message = "Le champ note est obligatoire")
     @Field(value = "note")
     private String note;
 
     @Field(value = "dateNote")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateNote;
 }
