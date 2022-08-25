@@ -44,6 +44,22 @@ public class NoteServiceTest {
     }
 
     @Test
+    public void findNoteByPatientIdTest() {
+        note.setDateNote(LocalDateTime.of(2022, 8, 24, 10,20,30));
+        note.setId(2L);
+        note.setPatientLastName("Jean");
+        note.setPatientId(4L);
+        note.setPatientFirstName("Pierre");
+        note.setNote("Test COVID positive ");
+
+        List<Note> noteList = this.noteService.findByPatientId(4L);
+        noteList.add(note);
+        when(this.noteRepository.findByPatientId(anyLong())).thenReturn(noteList);
+        Assertions.assertTrue(noteList.size() > 0);
+        verify(this.noteRepository).findByPatientId(anyLong());
+    }
+
+    @Test
     public void findNoteByIdTest() {
         note.setDateNote(LocalDateTime.of(1, 1, 1, 1, 1));
         note.setId(42L);

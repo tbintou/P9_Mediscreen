@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,12 +29,24 @@ public class NoteController {
     }
 
 
-    @PostMapping("/notes/add")
+    @PostMapping("/notes")
     @ApiOperation(value = "Créer une nouvelle note")
     public ResponseEntity<Object> createdNote(@RequestBody @Valid Note note) {
         Note newNote = noteService.saveNote(note);
         log.info("Les Notes liées à l'id : " + newNote.getId() + " ont été créé avec succès.");
         return new ResponseEntity<>(newNote, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/notes/patient/{patientId}")
+    @ApiOperation("Obtenir toutes les notes par l'ID d'un patient")
+    public ResponseEntity<List<Note>> findByPatientById(@PathVariable(value = "patientId") Long patientId) {
+        List<Note> noteList = noteService.findByPatientId(patientId);
+        if (noteList.isEmpty()) {
+            log.error("Impossible de trouver des notes avec PatientId : " + patientId);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        }
+        log.info("Voici les notes qui ont été avec ce PatientId : " + patientId);
+        return ResponseEntity.ok(noteList);
     }
 
     @GetMapping("/notes/{id}")
@@ -47,7 +60,7 @@ public class NoteController {
         return new ResponseEntity<>(noteId, HttpStatus.OK);
     }
 
-    @GetMapping("/notes/findByLastAndFirstName")
+    @GetMapping("/notes/patient")
     @ApiOperation(value = "Chercher les notes du patient par son nom de famille et son prénom")
     public ResponseEntity<List<Note>> findNoteByLastNameAndFirstName(@RequestParam("lastName") String patientLastName, @RequestParam("firstName") String patientFirstName) {
         log.info("Obtenir les Notes du patient par son nom et son prénom : {} - {} : ", patientLastName, patientFirstName);

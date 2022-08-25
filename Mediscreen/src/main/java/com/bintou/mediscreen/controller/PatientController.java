@@ -31,7 +31,7 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @PostMapping("/patients/add")
+    @PostMapping("/patients")
     @ApiOperation("Créer un nouveau patient")
     public ResponseEntity<Object> createdPatient(@RequestBody @Valid Patient patient, BindingResult bindingResult) throws ValidationErrorHandlerController {
         ResponseEntity<Object> message = getBindingResultErrors(bindingResult);
