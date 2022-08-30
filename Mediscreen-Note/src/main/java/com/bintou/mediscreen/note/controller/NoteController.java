@@ -4,6 +4,7 @@ import com.bintou.mediscreen.note.exception.ResourceNotFoundException;
 import com.bintou.mediscreen.note.model.Note;
 import com.bintou.mediscreen.note.service.NoteService;
 //import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,10 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+//@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @Slf4j
-
+@Api(tags = "API de l'enregistrement des notes patients")
 @RequestMapping("/api")
 public class NoteController {
 

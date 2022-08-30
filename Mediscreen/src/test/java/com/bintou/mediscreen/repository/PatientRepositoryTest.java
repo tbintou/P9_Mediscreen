@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class PatientRepositoryTest {
     @Test
     public void patientTest() throws ParseException {
         String birthdateStr = "1945-06-24";
-        Date birthdate = parseDate(birthdateStr);
+        LocalDate birthdate = LocalDate.parse(birthdateStr);
         Patient patient = new Patient();
 
         patient.setId(2L);
