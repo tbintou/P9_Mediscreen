@@ -54,12 +54,12 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    @GetMapping("/patients/family")
+    @GetMapping("/patients/patient")
     @ApiOperation("Chercher un patient par son nom de famille")
-    public ResponseEntity<List<Patient>> findPatientByLastName(@RequestParam(value = "lastName") String lastName) {
-        List<Patient> patientList = patientService.findPatientByLastName(lastName);
+    public ResponseEntity<List<Patient>> findPatientByLastNameAndFirstName(@RequestParam(value = "lastName") String lastName, @RequestParam(value = "firstName") String firstName) {
+        List<Patient> patientList = patientService.findPatientByLastNameAndFirstName(lastName, firstName);
         if (patientList.isEmpty()) {
-            log.error("Impossible de trouver le(s) patient(s) avec ce nom de famille : " + lastName);
+            log.error("Impossible de trouver le(s) patient(s) avec ce nom de famille : " + lastName + " et ce prénom : " + firstName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         log.info("Le(s) patient(s) trouver avec le nom de famille est : " + lastName);

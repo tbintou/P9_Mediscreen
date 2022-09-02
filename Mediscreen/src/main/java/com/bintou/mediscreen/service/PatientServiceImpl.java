@@ -26,8 +26,8 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public List<Patient> findPatientByLastName(String lastName) {
-        return patientRepository.findPatientByLastName(lastName);
+    public List<Patient> findPatientByLastNameAndFirstName(String lastName, String firstName) {
+        return patientRepository.findPatientByLastNameAndFirstName(lastName, firstName);
     }
 
     @Override

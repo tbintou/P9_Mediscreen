@@ -16,6 +16,6 @@ public interface PatientProximity {
     @GetMapping("/api/patients/{id}")
     ResponseEntity<Patient> findPatientById(@PathVariable(value = "id") Long id);
 
-    @GetMapping("/api/patients/family")
-    ResponseEntity<List<Patient>> findPatientByLastName(@RequestParam(value = "lastName") String lastName);
+    @GetMapping("/api/patients/patient")
+    ResponseEntity<List<Patient>> findPatientByLastNameAndFirstName(@RequestParam(value = "lastName") String lastName, @RequestParam(value = "firstName") String firstName);
 }

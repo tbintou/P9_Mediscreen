@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -101,6 +102,14 @@ public class NoteServiceTest {
     }
 
     @Test
+    public void updateNoteReturnNullTest() {
+        Long noteId = 0L;
+        Note noteToDelete = new Note();
+        Note updatedNoteNull = noteService.updateNote(noteId, noteToDelete);
+        assertNull(updatedNoteNull);
+    }
+
+    @Test
     public void findAllNoteTest() {
         ArrayList<Note> noteList = new ArrayList<Note>();
         when(this.noteRepository.findAll()).thenReturn(noteList);
@@ -124,6 +133,14 @@ public class NoteServiceTest {
         Assertions.assertTrue(notesById.isPresent());
         Assertions.assertFalse(false);
         verify(this.noteRepository).findById(anyLong());
+    }
+
+    @Test
+    public void deleteNoteByIdReturnNullTest() {
+        Long idNoteToDelete = note.getId();
+        noteService.deleteNoteById(idNoteToDelete);
+        Note noteById = noteService.findNoteById(idNoteToDelete);
+        assertNull(noteById);
     }
 
 }

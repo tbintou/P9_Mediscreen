@@ -44,8 +44,7 @@ public class NoteController {
     public ResponseEntity<List<Note>> findByPatientById(@PathVariable(value = "patientId") Long patientId) {
         List<Note> noteList = noteService.findByPatientId(patientId);
         if (noteList.isEmpty()) {
-            log.error("Impossible de trouver des notes avec PatientId : " + patientId);
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+             throw new ResourceNotFoundException("Impossible de trouver des notes avec ce PatientId : " + patientId);
         }
         log.info("Voici les notes qui ont été avec ce PatientId : " + patientId);
         return ResponseEntity.ok(noteList);

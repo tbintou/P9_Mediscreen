@@ -4,6 +4,9 @@ import com.bintou.mediscreen.note.MediscreenNoteApplication;
 import com.bintou.mediscreen.note.exception.ResourceNotFoundException;
 import com.bintou.mediscreen.note.model.Note;
 import com.bintou.mediscreen.note.service.NoteService;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,12 +19,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,6 +47,7 @@ public class NoteControllerTest {
     private NoteService noteService;
 
     private Note note = new Note();
+    String exceptionParam = "not_found";
 
 
     @BeforeAll
@@ -57,7 +62,7 @@ public class NoteControllerTest {
         note.setPatientLastName("Macron");
         note.setPatientFirstName("Bernard");
         note.setNote("Ajout des nouvelles notes");
-        note.setDateNote(LocalDateTime.of(2022, 8, 24, 10,20,30));
+        note.setDateNote(LocalDateTime.of(1, 8, 1, 1,1));
 
         when(noteService.saveNote(note)).thenReturn(note);
         mockMvc.perform(post("/api/notes")
@@ -89,9 +94,11 @@ public class NoteControllerTest {
 
     @Test
     public void findNoteByPatientIdTestReturnNull() throws Exception {
-        when(noteService.findByPatientId(1L)).thenReturn(new ArrayList<>());
-        mockMvc.perform(get("/api/notes/patient/1")
-        ).andExpect(status().isBadRequest());
+        when(noteService.findByPatientId(0L)).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("/api/notes/patient/0", exceptionParam))
+            .andExpect(status().isNotFound())
+            .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+            .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
     }
 
     @Test
@@ -113,11 +120,11 @@ public class NoteControllerTest {
 
     @Test
     public void findNoteByIdTestReturnNull() throws Exception {
-        when(noteService.findNoteById(null))
-                .thenReturn(new Note())
-                .thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(get("/api/notes/null")
-        ).andExpect(status().isBadRequest());
+        when(noteService.findNoteById(1L)).thenReturn(null);
+        mockMvc.perform(get("/api/notes/1", exceptionParam))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
     }
 
     @Test
@@ -156,47 +163,47 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$.[1].patientFirstName").value("Bernard"));
     }
 
-    @Test
+   @Test
     public void findNoteByLastNameAndFirstNameTestReturnNull() throws Exception {
-        Note note1 = new Note();
-        Note note2 = new Note();
-        List<Note> noteList = new ArrayList<>();
-        noteList.add(note1);
-        noteList.add(note2);
-
-        when(noteService.findNoteByLastNameAndFirstName("Macron", "Bernard"))
-                .thenReturn(null)
-                .thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(get("/api/notes/null")
-        ).andExpect(status().isBadRequest());
+       List<Note> noteList = new ArrayList<>();
+        when(noteService.findNoteByLastNameAndFirstName("Macron", "Bernard")).thenReturn(noteList);
+        mockMvc.perform(get("/api/notes/patient", exceptionParam)
+                        .param("lastName", "Macron")
+                        .param("firstName", "Bernard"))
+               .andExpect(status().isNotFound())
+               .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+               .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
     }
 
     @Test
     public void updateNotesTestReturnOK() throws Exception {
         Note updateNote = new Note();
         updateNote.setDateNote(LocalDateTime.of(4, 5, 7, 5, 9));
-        updateNote.setId(22L);
-        updateNote.setPatientId(32L);
+        updateNote.setId(2L);
+        updateNote.setPatientId(2L);
         updateNote.setPatientLastName("Macron");
         updateNote.setPatientFirstName("Bernard");
         updateNote.setNote("Mise à jour des notes du patient");
 
-        when(noteService.updateNote(22L, updateNote)).thenReturn(updateNote);
+        when(noteService.updateNote(2L, updateNote)).thenReturn(updateNote);
         mockMvc.perform(put("/api/notes/22")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
-        // .andExpect(status().IsOk());
+               /* .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.patientLastName").value( "Macron"))
+                .andExpect(jsonPath("$.note").value( "Mise à jour des notes du patient"));*/
     }
 
-    @Test
+   @Test
     public void updateNotesTestReturnNull() throws Exception {
         Note updateNote = new Note();
 
-        when(noteService.saveNote(updateNote))
-                .thenReturn(null)
-                .thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(get("/api/notes/null")
-        ).andExpect(status().isBadRequest());
+        when(noteService.updateNote(1L, updateNote)).thenReturn(null);
+        mockMvc.perform(get("/api/notes/1", exceptionParam))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
     }
 
     @Test
@@ -233,12 +240,13 @@ public class NoteControllerTest {
 
     @Test
     public void findAllNoteTestReturnNull() throws Exception {
-
-        when(noteService.findAllNote())
-                .thenReturn(null)
-                .thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(get("/api/notes/null")
-        ).andExpect(status().isBadRequest());
+        List<Note> noteList = new ArrayList<>();
+        when(noteService.findAllNote()).thenReturn(noteList);
+        mockMvc.perform(get("/api/notes", exceptionParam)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
     }
 
     @Test
@@ -250,9 +258,25 @@ public class NoteControllerTest {
 
     @Test
     public void deleteNoteByIdTestReturnNull() throws Exception {
-        when(noteService.deleteNoteById(null)).thenReturn(false).thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(delete("/api/notes/null")
-        ).andExpect(status().isBadRequest());
+        when(noteService.deleteNoteById(0L)).thenReturn(false);
+        mockMvc.perform(delete("/api/notes/0", exceptionParam)
+        ).andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
+                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
     }
+
+   /* public class ObjectToJsonUtil {
+        private byte[] convertObjectToJsonBytes(Object object)
+                throws IOException {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+            JavaTimeModule module = new JavaTimeModule();
+            mapper.registerModule(module);
+
+            return mapper.writeValueAsBytes(object);
+        }
+
+    }*/
 
 }

@@ -1,32 +1,26 @@
 package com.bintou.mediscreen.rapport.service;
 
+import com.bintou.mediscreen.rapport.config.FeignBadResponseWrapper;
 import com.bintou.mediscreen.rapport.model.Note;
 import com.bintou.mediscreen.rapport.model.Patient;
-import com.bintou.mediscreen.rapport.model.Rapport;
-import com.bintou.mediscreen.rapport.model.Status;
 import com.bintou.mediscreen.rapport.proximity.NoteProximity;
 import com.bintou.mediscreen.rapport.proximity.PatientProximity;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.Period;
+import java.util.*;
 
 @Service
 @Slf4j
-@PropertySource("declencheurs")
 public class RapportService {
 
     private final NoteProximity noteProximity;
     private final PatientProximity patientProximity;
-    private final String[] declencheurs;
 
     private final int THIRTEEN = 30;
     private final int TWO = 2;
@@ -38,64 +32,111 @@ public class RapportService {
     private final int EIGHT = 8;
 
 
-    public RapportService(NoteProximity noteProximity, PatientProximity patientProximity, @Value("${listDeclencheurs}") String[] declencheurs) {
+    public RapportService(NoteProximity noteProximity, PatientProximity patientProximity) {
         this.noteProximity = noteProximity;
         this.patientProximity = patientProximity;
-        this.declencheurs = declencheurs;
     }
 
-    public long getPatientAge (Patient patient) {
-        return ChronoUnit.YEARS.between(patient.getBirthDate(), LocalDate.now());
-    }
-
-    public Status calculRisk (Patient patient, List<Note> noteList) {
-        long nbDeclencheurs = calculNbreDeclencheurs(noteList);
-        long age = getPatientAge(patient);
-        Status status = Status.None;
-
-
-        if( (age > THIRTEEN && nbDeclencheurs >= EIGHT) ||
-                ("F".equals(patient.getGender()) && age < THIRTEEN && nbDeclencheurs >= SEVEN) ||
-                ("M".equals(patient.getGender()) && age < THIRTEEN && nbDeclencheurs >= FIVE)
-            ) {
-            status = Status.EarlyOnset;
-        } else if ( (age > THIRTEEN && nbDeclencheurs >= SIX ) ||
-                ("F".equals(patient.getGender()) && age < THIRTEEN && nbDeclencheurs >= FOUR && nbDeclencheurs <= SIX) ||
-                ("M".equals(patient.getGender()) && age < THIRTEEN && nbDeclencheurs >= THREE && nbDeclencheurs <= FOUR)
-        ) {
-            status = Status.InDanger;
-        } else if ( age > THIRTEEN && nbDeclencheurs >= TWO
-        ) {
-            status = Status.Borderline;
+    public Patient getPatientInfo(Long patientId) {
+        try {
+            return patientProximity.findPatientById(patientId).getBody();
+        } catch (HystrixBadRequestException he) {
+            if (he instanceof FeignBadResponseWrapper) {
+                return null;
+            } else {
+                return null;
+            }
         }
-        return status;
     }
 
-    public long calculNbreDeclencheurs (List<Note> noteList) {
-
-        String noteToStream = noteList.stream()
-                .map(Note::getNote)
-                .map(String::trim)
-                .collect(Collectors.joining());
-
-        return Arrays.stream(declencheurs)
-                .filter(noteToStream::contains)
-                .distinct()
-                .count();
+    public List<Note> getPatientNote(Long patientId) {
+        try {
+            return noteProximity.findByPatientId(patientId).getBody();
+        } catch (HystrixBadRequestException he) {
+            if (he instanceof FeignBadResponseWrapper) {
+                return null;
+            } else {
+                return null;
+            }
+        }
     }
 
-    public Rapport getRapportByLastNameAndFirstName (String lastName, String firstName) {
-        Patient patient = patientProximity.findPatientByLastName(lastName);
-        List<Note> noteList = noteProximity.findNoteByLastNameAndFirstName(lastName, firstName);
-       Status status = calculRisk(patient, noteList);
-        return new Rapport(patient.getLastName(), patient.getFirstName(), patient.getGender(), getPatientAge(patient), status);
+    public String calculateRiskByPatientId(Long patientId) {
+        Patient patientInfo = getPatientInfo(patientId);
+        List<Note> patientNoteList = getPatientNote(patientId);
+        if (patientId == null || patientInfo == null || patientNoteList == null) return null;
+
+        Integer age = getPatientAge(patientInfo.getBirthDate());
+        String sex = patientInfo.getGender();
+
+        Integer terms = getTotalTriggerTerms(patientNoteList);
+
+        String assessment = "";
+
+        if (terms == 0) {
+            assessment = "aucun risque (None)";
+        }
+
+        if (age > THIRTEEN) {
+            if (terms >= TWO && terms < SIX) {
+                assessment = "risque limité (Borderline)";
+            } else if (terms >= SIX && terms < EIGHT) {
+                assessment = "danger (In Danger)";
+            } else if (terms >= EIGHT) {
+                assessment = "apparition précoce (Early onset)";
+            }
+        } else if (age < THIRTEEN) {
+            if (sex.equals("M")) {
+                if (terms >= THREE && terms < FIVE) {
+                    assessment = "danger (In Danger)";
+                } else if (terms >= FIVE) {
+                    assessment = "apparition précoce (Early onset)";
+                }
+            } else if (sex.equals("F")) {
+                if (terms >= FOUR && terms < SEVEN) {
+                    assessment = "danger (In Danger)";
+                } else if (terms >= SEVEN) {
+                    assessment = "apparition précoce (Early onset)";
+                }
+            }
+        }
+
+        return assessment;
     }
 
-    public Rapport getRapportById (long id) {
-        Patient patient = patientProximity.findPatientById(id);
-        List<Note> noteList = noteProximity.findNoteByLastNameAndFirstName(patient.getLastName(), patient.getFirstName());
-        Status status = calculRisk(patient, noteList);
-        return new Rapport(patient.getLastName(), patient.getFirstName(), patient.getGender(), getPatientAge(patient), status);
+    public Integer getPatientAge(LocalDate birthDate) {
+        int age = 0;
+        if (birthDate != null) {
+            LocalDate today = LocalDate.now();
+            age = Period.between(birthDate, today).getYears();
+        }
+        return age;
+    }
+
+    private Integer getTotalTriggerTerms(List<Note> patientNoteList) {
+        Integer result = 0;
+        Set<String> terms = new HashSet<>();
+        terms.add("Hémoglobine A1C");
+        terms.add("Microalbumine");
+        terms.add("Taille");
+        terms.add("Poids");
+        terms.add("Fume");
+        terms.add("Anormal");
+        terms.add("Cholestérol");
+        terms.add("Vertige");
+        terms.add("Rechute");
+        terms.add("Réaction");
+        terms.add("Anticorps");
+
+        for (Note note : patientNoteList) {
+            for (String term : terms) {
+                if (note.getNote().toLowerCase(Locale.ROOT).contains(term.toLowerCase(Locale.ROOT))) {
+                    result ++;
+                }
+            }
+        }
+
+        return result;
     }
 
 }

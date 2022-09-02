@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PatientServiceTest {
 
     private Patient patient = new Patient();
+    private final Patient patientToDelete = new Patient();
+    private Long idToDelete = 0L;
 
     @Autowired
     private PatientRepository patientRepository;
@@ -69,16 +71,22 @@ public class PatientServiceTest {
     @Order(3)
     public void findPatientByLastNameTest(){
         String lastName = "TestNone";
-        List<Patient> patientList = patientService.findPatientByLastName(lastName);
+        String firstName = "Test";
+        List<Patient> patientList = patientService.findPatientByLastNameAndFirstName(lastName, firstName);
         assertTrue(patientList.size() > 0);
     }
 
     @Test
     @Order(4)
     public void updatePatientTest() {
-        patient.setLastName("TestJean");
-        patient = patientRepository.save(patient);
-        assertEquals(patient.getLastName(), "TestJean");
+        Long id = patient.getId();
+        Patient patientById = patientService.findPatientById(id);
+        patientById.setLastName("Batis");
+        patientById.setFirstName("Jean");
+        Patient updatedPatient = patientService.updatePatient(id, patientById);
+        assertEquals("Batis", updatedPatient.getLastName());
+        assertEquals("Jean", updatedPatient.getFirstName());
+
     }
 
     @Test
@@ -91,17 +99,17 @@ public class PatientServiceTest {
     @Test
     @Order(6)
     public void deletePatientByIdTest() {
-        Long idPatient = patient.getId();
-        patientRepository.delete(patient);
-        Optional<Patient> optionalPatient = patientRepository.findById(idPatient);
-        assertFalse(optionalPatient.isPresent());
+        Long idPatientToDelete = patient.getId();
+        patientService.deletePatientById(idPatientToDelete);
+        Patient patientById = patientService.findPatientById(idPatientToDelete);
+        assertNull(patientById);
     }
 
-
-    public static Date parseDate(String myDate) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(myDate);
-        long timeInMillis = date.getTime();
-        return new Date(timeInMillis);
+    @Test
+    @Order(7)
+    public void updatePatientReturnNullTest() {
+        Patient patient = patientService.updatePatient(idToDelete, patientToDelete);
+        assertNull(patient);
     }
+
 }

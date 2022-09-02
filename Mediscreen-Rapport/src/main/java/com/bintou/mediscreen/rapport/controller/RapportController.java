@@ -23,20 +23,15 @@ public class RapportController {
         this.rapportService = rapportService;
     }
 
-    @GetMapping("/reports/patient")
-    @ApiOperation(value = "Obtenir un rapport sur le patient avec son nom et son prénom")
-    public ResponseEntity<Rapport> getRapportByLastAndFirstName(@RequestParam("lastName") String lastName, @RequestParam("firstName") String firstName) {
-        log.info("Obtenir le(s) Rapport(s) avec nom de famille : {} et prénom : {} ", lastName, firstName);
-        Rapport rapport = rapportService.getRapportByLastNameAndFirstName(lastName, firstName);
-        return new ResponseEntity<>(rapport, HttpStatus.OK);
+    @GetMapping("/rapports/patient/{patientId}")
+    @ApiOperation("Générer une évaluation du diabète par l'ID du patient")
+    public ResponseEntity<String> getRiskAssessment(@PathVariable(value = "patientId") Long patientId) {
+        String risk = rapportService.calculateRiskByPatientId(patientId);
+        if (risk == null) {
+            log.info("Aucune donnée trouvée avec ce patientId : " + patientId);
+            return new ResponseEntity<>("Aucune donnée trouvée avec ce patientId : " + patientId, HttpStatus.BAD_REQUEST);
+        }
+        log.info("Les Données du rapport trouvée avec ce patientId est : " + patientId);
+        return ResponseEntity.ok(risk);
     }
-
-    @GetMapping("/reports/{id}")
-    @ApiOperation(value = "Obtenir un rapport avec ID")
-    public ResponseEntity<Rapport> getRapportById (@PathVariable long id) {
-        log.info("Obtenir le(s) Rapport(s) avec ID : {} OK ", id);
-        Rapport rapport = rapportService.getRapportById(id);
-        return new ResponseEntity<>(rapport, HttpStatus.OK);
-    }
-
 }

@@ -46,9 +46,10 @@ public class PatientRepositoryTest {
         Optional<Patient> patientOptional = patientRepository.findById(id);
         assertTrue(patientOptional.isEmpty());
 
-        //FindByLastName
+        //FindByLastNameAndFirstName
         String lastName = "TestNone";
-        List<Patient> patientListByLastName = patientRepository.findPatientByLastName(lastName);
+        String firstName = "Test";
+        List<Patient> patientListByLastName = patientRepository.findPatientByLastNameAndFirstName(lastName, firstName);
         assertTrue(patientListByLastName.size() > 0);
 
         // Update

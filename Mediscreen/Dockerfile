@@ -1,6 +1,5 @@
 FROM maven:3-openjdk-11 AS build
-EXPOSE 8081
 MAINTAINER bintou01
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+COPY ./target/mediscreen-patient-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8081
 ENTRYPOINT ["java","-jar","/app.jar"]

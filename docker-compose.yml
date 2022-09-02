@@ -32,7 +32,7 @@ services:
       - "spring_datasource_username=root"
       - "spring_datasource_password=root"
       - "SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/mediscreen?serverTimezone=UTC"
-     # - "front.serviceUrl=http://localhost"
+      # - "front.serviceUrl=http://localhost"
       - "note.serviceUrl=http://localhost"
       - "rapport.serviceUrl=http://localhost://mediscreen-rapport:8083"
 
@@ -47,7 +47,7 @@ services:
       - default
     environment:
       - "spring_data_mongodb_host=mongodb"
-     # - "front.serviceUrl=http://localhost"
+      # - "front.serviceUrl=http://localhost"
       - "rapport.serviceUrl=http://mediscreen-rapport:8083"
 
   rapport:
@@ -58,7 +58,7 @@ services:
     networks:
       - default
     environment:
-     # - "front.serviceUrl=http://localhost"
+      # - "front.serviceUrl=http://localhost"
       - "patient.serviceUrl=http://mediscreen-patient:8081"
       - "note.serviceUrl=http://mediscreen-note:8082"
 

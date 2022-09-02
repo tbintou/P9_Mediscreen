@@ -46,6 +46,8 @@ public class PatientControllerTest {
     @MockBean
     private PatientService mockPatientService;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @BeforeAll
     public void setUp(){
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -56,20 +58,22 @@ public class PatientControllerTest {
         String birthdateStr = "1945-06-24";
         LocalDate birthdate = LocalDate.parse(birthdateStr);
 
-        patient.setId(3L);
-        patient.setFirstName("Jean");
-        patient.setLastName("Batis");
+        patient.setId(159L);
+        patient.setFirstName("Eric");
+        patient.setLastName("Macron");
         patient.setBirthDate(birthdate);
         patient.setGender("F");
+        patient.setAdress("");
+        patient.setPhone("");
 
         when(mockPatientService.savePatient(any(Patient.class))).thenReturn(patient);
         mockMvc.perform(post("/api/patients")
                 .contentType(MediaType.APPLICATION_JSON)
-                  //  .content(asJsonString(patient))
                 .accept(MediaType.APPLICATION_JSON));
-              /*  .andExpect(status().isCreated())
+               /* .andExpect(status().isCreated());
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.firstName").value("Jean"));*/
+                .andExpect(jsonPath("$.firstName").value("bbb"));*/
+
     }
 
     @Test
@@ -126,9 +130,10 @@ public class PatientControllerTest {
         patientList.add(patient1);
         patientList.add(patient2);
 
-        when(mockPatientService.findPatientByLastName("Bertrand")).thenReturn(patientList);
-        mockMvc.perform(get("/api/patients/family")
+        when(mockPatientService.findPatientByLastNameAndFirstName("Bertrand", "Batis")).thenReturn(patientList);
+        mockMvc.perform(get("/api/patients/patient")
                         .param("lastName", "Bertrand")
+                        .param("firstName", "Batis")
                         .contentType(MediaType.ALL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -139,9 +144,10 @@ public class PatientControllerTest {
 
     @Test
     public void findListPatientIsEmpty() throws Exception {
-        when(mockPatientService.findPatientByLastName("ddd")).thenReturn(new ArrayList<>());
-        mockMvc.perform(get("/api/patients/family")
+        when(mockPatientService.findPatientByLastNameAndFirstName("ddd", "ccccccc")).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("/api/patients/patient")
                         .param("lastName", "ddd")
+                        .param("firstName", "ccccccc")
                         .contentType(MediaType.ALL))
                 .andExpect(status().isNoContent());
     }
@@ -165,6 +171,26 @@ public class PatientControllerTest {
                        // .content(asJsonString(updatePatient))
                         .accept(MediaType.APPLICATION_JSON));
                // .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updatePatientBindingResultWhenInputIsNull() throws Exception {
+        String birthDateStr = "1968-10-29";
+        LocalDate birthDate = LocalDate.parse(birthDateStr);
+        Patient updatedPatient = new Patient();
+        updatedPatient.setId(33L);
+        updatedPatient.setFirstName("Jean");
+        updatedPatient.setLastName("Batis");
+        updatedPatient.setBirthDate(birthDate);
+        updatedPatient.setAdress("2 Avenue Sttttttttt");
+        updatedPatient.setGender("M");
+        updatedPatient.setPhone("5111-222-6666");
+
+        when(mockPatientService.updatePatient(33L, updatedPatient)).thenReturn(updatedPatient);
+        mockMvc.perform(put("/api/patients/33")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -231,6 +257,13 @@ public class PatientControllerTest {
     }
 
     @Test
+    public void deletePatientByIdReturn404() throws Exception {
+        when(mockPatientService.deletePatientById(1111L)).thenReturn(false);
+        mockMvc.perform(delete("/api/patients/1111")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
     public void findPatientByIdNotFound() throws Exception {
         when(mockPatientService.findPatientById(198L)).thenReturn(null);
         mockMvc.perform(get("/api/patient/198")
@@ -239,8 +272,8 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void findPatientByLastNameStatusOK() throws Exception {
-        when(mockPatientService.findPatientByLastName("fff")).thenReturn(null);
+    public void findPatientByLastNameStatusNull() throws Exception {
+        when(mockPatientService.findPatientByLastNameAndFirstName("fff", "eeeee")).thenReturn(null);
         mockMvc.perform(get("/api/patients")
                         .param("lastName", "fff")
                         .contentType(MediaType.ALL))
@@ -251,8 +284,7 @@ public class PatientControllerTest {
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            final String jsonContent = mapper.writeValueAsString(obj);
-            return jsonContent;
+            return mapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

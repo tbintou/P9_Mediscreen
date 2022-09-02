@@ -11,7 +11,7 @@
 	<groupId>com.bintou.mediscreen</groupId>
 	<artifactId>mediscreen</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mediscreen</name>
+	<name>mediscreen-Patient</name>
 	<description>Project Spring Boot for Mediscreen</description>
 	<properties>
 		<java.version>11</java.version>
@@ -106,6 +106,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.13.3</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
