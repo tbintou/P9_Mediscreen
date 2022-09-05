@@ -38,7 +38,7 @@ public class NoteRepositoryTest {
         Assertions.assertEquals(note.getPatientLastName(), "Jack");
 
         // FindByPatientId
-        Long patientId = 4L;
+        Long patientId = 7L;
         note.setPatientId(patientId);
         List<Note> notePatientList = noteRepository.findByPatientId(patientId);
         Assertions.assertTrue(notePatientList.size() > 0);

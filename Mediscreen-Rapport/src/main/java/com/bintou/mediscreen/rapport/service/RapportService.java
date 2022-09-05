@@ -74,7 +74,7 @@ public class RapportService {
         String assessment = "";
 
         if (terms == 0) {
-            assessment = "aucun risque (None)";
+            assessment = "Aucun risque (None)";
         }
 
         if (age > THIRTEEN) {
