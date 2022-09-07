@@ -1,11 +1,11 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8
+    image: mysql:5.7
     container_name: mysql
-    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mediscreen
     ports:
       - 3306:3306
     volumes:
@@ -19,10 +19,10 @@ services:
     volumes:
       - mongodb_data_container:/data/db
 
-  patient:
+  mediscreen:
     depends_on:
       - mysql
-    image: mediscreen-patient
+    image: mediscreen-patient:latest
     container_name: mediscreen-patient
     ports:
       - "8081:8081"
@@ -31,15 +31,15 @@ services:
     environment:
       - "spring_datasource_username=root"
       - "spring_datasource_password=root"
-      - "SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/mediscreen?serverTimezone=UTC"
+      - "SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/mediscreen?autoReconnect=true&useSSL=false"
       # - "front.serviceUrl=http://localhost"
       - "note.serviceUrl=http://localhost"
       - "rapport.serviceUrl=http://localhost://mediscreen-rapport:8083"
 
-  notes:
+  note:
     depends_on:
       - mongodb
-    image: mediscreen-note
+    image: mediscreen-note:latest
     container_name: mediscreen-note
     ports:
       - "8082:8082"
@@ -51,7 +51,7 @@ services:
       - "rapport.serviceUrl=http://mediscreen-rapport:8083"
 
   rapport:
-    image: mediscreen-rapport
+    image: mediscreen-rapport:latest
     container_name: mediscreen-rapport
     ports:
       - "8083:8083"
@@ -59,10 +59,8 @@ services:
       - default
     environment:
       # - "front.serviceUrl=http://localhost"
-      - "patient.serviceUrl=http://mediscreen-patient:8081"
+      - "patient.serviceUrl=http://mediscreen:8081"
       - "note.serviceUrl=http://mediscreen-note:8082"
-
-
 
 volumes:
   mysql_db_data_container:
