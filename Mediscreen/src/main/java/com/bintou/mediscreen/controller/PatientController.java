@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.bintou.mediscreen.exception.ValidationErrorHandlerController.getBindingResultErrors;
 
-//@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @Slf4j
 @Api(tags = "Données API des patients")

@@ -1,0 +1,23 @@
+.google {
+    float:left;
+    width:15%;
+    margin-top: 10px;
+    margin-left: 50px;
+}
+.github {
+    float: left;
+    width: 20%;
+    margin-left: 180px;
+}
+.registration {
+    margin-top: 120px;
+}
+/*************************************** Media *************************************
+@media (min-width: 600px) {
+.github {
+    float: left;
+    width: 20%;
+    margin-left: 110px;
+}
+
+}*/

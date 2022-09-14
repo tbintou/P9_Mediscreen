@@ -1,7 +1,5 @@
 FROM maven:3-openjdk-11 AS build
-WORKDIR /Mediscreen
-COPY . .
+MAINTAINER mediscreen-app:tagname
+COPY ./target/mediscreen-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java","-jar","/app.jar"]
-RUN mvn clean
-CMD mvn spring-boot:run

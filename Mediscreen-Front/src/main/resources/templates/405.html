@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Erreur 405</title>
+    </head>
+    <body>
+        <h3>Nom d'utilisateur en double</h3>
+        <div>
+            Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
+        </div>
+        <p class="error">Ce nom d'utilisateur a été utilisé, veuillez changer de nom. Retourner à  <a th:href="@{/registration}">S'inscrire</a></p>
+    </body>
+</html>

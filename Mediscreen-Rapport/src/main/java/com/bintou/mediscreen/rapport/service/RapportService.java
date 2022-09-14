@@ -3,16 +3,20 @@ package com.bintou.mediscreen.rapport.service;
 import com.bintou.mediscreen.rapport.config.FeignBadResponseWrapper;
 import com.bintou.mediscreen.rapport.model.Note;
 import com.bintou.mediscreen.rapport.model.Patient;
+import com.bintou.mediscreen.rapport.model.Rapport;
+import com.bintou.mediscreen.rapport.model.Status;
 import com.bintou.mediscreen.rapport.proximity.NoteProximity;
 import com.bintou.mediscreen.rapport.proximity.PatientProximity;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -66,7 +70,7 @@ public class RapportService {
         List<Note> patientNoteList = getPatientNote(patientId);
         if (patientId == null || patientInfo == null || patientNoteList == null) return null;
 
-        Integer age = getPatientAge(patientInfo.getBirthDate());
+        Long age = getPatientAge(patientInfo);
         String sex = patientInfo.getGender();
 
         Integer terms = getTotalTriggerTerms(patientNoteList);
@@ -104,13 +108,8 @@ public class RapportService {
         return assessment;
     }
 
-    public Integer getPatientAge(LocalDate birthDate) {
-        int age = 0;
-        if (birthDate != null) {
-            LocalDate today = LocalDate.now();
-            age = Period.between(birthDate, today).getYears();
-        }
-        return age;
+    public Long getPatientAge(Patient patient) {
+        return ChronoUnit.YEARS.between(patient.getBirthDate(), LocalDate.now());
     }
 
     private Integer getTotalTriggerTerms(List<Note> patientNoteList) {

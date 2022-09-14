@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <head>
+        <title> Mediscreen </title>
+        <link rel="stylesheet" href="/css/styles.css"/>
+        <link rel="stylesheet" href="../../css/bootstrap.min.css" >
+    </head>
+    <body>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="card text-center mt-lg-1">
+                    <!--<div th:replace="~{/header::topbar}"></div>-->
+
+                    <h3 style="margin-top: 0.5em; margin-left: 0.5em;"> Page d'accueil </h3>
+                    <p style="margin-top: 0.5em; margin-left: 0.75em;">
+                        <span th:text="${name}"></span> <br>
+                        <a href="/login"> Déconnexion </a>
+                        <a style=" margin-left: 1em;" href="/user/list" sec:authorize="hasAuthority('ADMIN')"> Gestion des utilisateurs </a>
+                        <a style=" margin-left: 1em;" href="/api/patients"> Liste des patients </a>
+                    </p>
+
+                    <div class="card-body">
+
+                        <div class="col-sm-6 cardcontact">
+                            <div class="card mb-3" style="max-width: 100%;">
+                                <div class="row d-0">
+                                    <div class="col-md-4">
+                                        <img src="../../images/home.png" class="img-fluid rounded-start" alt="...">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card title</h5>
+                                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div th:replace="~{/footer::footer}"></div>-->
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -27,7 +27,7 @@ services:
 
     environment:
       SPRING_APPLICATION_JSON: '{
-            "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/MYSQLDB_DATABASE?useSSL=false",
+            "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/mediscreen?useSSL=false",
             "spring.datasource.username" : "$MYSQLDB_USER",
             "spring.datasource.password" : "$MYSQLDB_ROOT_PASSWORD",
             "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
@@ -71,6 +71,22 @@ services:
       # - "front.serviceUrl=http://localhost"
       - "patient.serviceUrl=http://mediscreen:8081"
       - "note.serviceUrl=http://mediscreen-note:8082"
+
+  front:
+    image: mediscreen-front:latest
+    container_name: mediscreen-front
+    build:
+      context: ./mediscreen-front
+      dockerfile: Dockerfile
+    environment:
+      - mediscreen
+      - mediscreen-note
+      - mediscreen-rapport
+    ports:
+      - 8080:8080
+    networks:
+      - default
+    restart: always
 
 volumes:
   db:

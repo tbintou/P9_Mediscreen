@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "mediscreen", url = "${patient.serviceUrl}")
+@FeignClient(value = "mediscreen", url = "${mediscreen.serviceUrl}")
 public interface PatientProximity {
 
     @GetMapping("/api/patients/{id}")

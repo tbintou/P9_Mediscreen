@@ -9,12 +9,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Mediscreen-Note" />
         <module name="Mediscreen-Rapport" />
+        <module name="Mediscreen-Front" />
         <module name="mediscreen" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Mediscreen-Front" options="-parameters" />
       <module name="Mediscreen-Note" options="-parameters" />
       <module name="Mediscreen-Rapport" options="-parameters" />
       <module name="mediscreen" options="-parameters" />
