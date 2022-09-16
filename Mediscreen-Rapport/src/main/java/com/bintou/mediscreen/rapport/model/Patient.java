@@ -3,7 +3,6 @@ package com.bintou.mediscreen.rapport.model;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +23,5 @@ public class Patient {
     private String adress;
 
     private String phone;
-
 
 }

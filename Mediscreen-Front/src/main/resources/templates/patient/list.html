@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Accueil</title>
+        <link rel="stylesheet" href="../../css/bootstrap.min.css" >
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <a href="/">Accueil</a>&nbsp;|&nbsp;
+                    <a href="/api/patients">Liste des patients</a>&nbsp;|&nbsp;
+                    <a href="#">Services d'évaluation</a>&nbsp;|&nbsp;
+                    <a href="#">Dossier</a>&nbsp;|&nbsp;
+                    <a href="#">Notes</a>
+                </div>
+                <div class="col-6 text-right">
+                    Utilisateur connecté est : <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
+                    <form th:action="@{/app-logout}" method="POST">
+                        <input type="submit" value="Déconnexion"/>
+                    </form>
+                </div>
+            </div>
+            <div class="row"><h2>Liste des patients</h2></div>
+            <div class="row">
+                <a href="/api/patients/add" class="btn btn-primary btn-sm">Ajouter un nouveau patient</a>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Prénom</th>
+                        <th>Nom de famille</th>
+                        <th>Date de naissance</th>
+                        <th>Adresse postale</th>
+                        <th>Numéro de téléphone</th>
+                        <th>Sexe</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style="width: 10%" th:each="patients : ${patients}">
+                        <td th:text="${patients.id}">Id patient</td>
+                        <td th:text="${patients.firstName}">Prénom</td>
+                        <td th:text="${patients.lastName}">Nom de famille</td>
+                        <td th:text="${patients.birthDate}">Date de naissance</td>
+                        <td th:text="${patients.adress}">Adresse postale</td>
+                        <td th:text="${patients.phone}">Numéro de téléphone</td>
+                        <td style="width: 5%" th:text="${patients.gender}">Sexe</td>
+
+                        <td style="width: 20%" class="text-center">
+                            <a th:href="@{/api/patients/update/{id}(id=${patients.getId()})}">Modifier &nbsp;</a>&nbsp;|&nbsp;
+                            <a th:href="@{/api/patients/delete/{id}(id=${patients.getId()})}">Supprimer</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

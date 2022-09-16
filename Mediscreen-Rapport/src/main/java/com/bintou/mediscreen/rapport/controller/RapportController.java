@@ -5,6 +5,7 @@ import com.bintou.mediscreen.rapport.service.RapportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ public class RapportController {
 
     private final RapportService rapportService;
 
+    @Autowired
     public RapportController(RapportService rapportService) {
         this.rapportService = rapportService;
     }

@@ -2,13 +2,14 @@ version: '3'
 services:
   mysqldb:
     image: mysql:5.7
+    container_name: mysqldb
     restart: unless-stopped
     env_file: ./.env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
-      - 3307:3306
+      - 3306:3307
     volumes:
       - db:/var/lib/mysql
 
@@ -57,7 +58,7 @@ services:
       - default
     environment:
       - "spring_data_mongodb_host=mongodb"
-      # - "front.serviceUrl=http://localhost"
+      - "front.serviceUrl=http://mediscreen-front:8080"
       - "rapport.serviceUrl=http://mediscreen-rapport:8083"
 
   rapport:
@@ -68,7 +69,7 @@ services:
     networks:
       - default
     environment:
-      # - "front.serviceUrl=http://localhost"
+      - "front.serviceUrl=http://mediscreen-front:8080"
       - "patient.serviceUrl=http://mediscreen:8081"
       - "note.serviceUrl=http://mediscreen-note:8082"
 
