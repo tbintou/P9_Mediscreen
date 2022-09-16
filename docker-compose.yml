@@ -9,9 +9,9 @@ services:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
-      - 3306:3307
+      - 3307:3306
     volumes:
-      - db:/var/lib/mysql
+      - C:/Users/binto/Desktop/Docker_Volumes/mysqldb:/var/lib/mysql
 
   mediscreen:
     depends_on:
@@ -24,7 +24,7 @@ services:
     restart: on-failure
     env_file: ./.env
     ports:
-      - 8081:8080
+      - 8081:8081
 
     environment:
       SPRING_APPLICATION_JSON: '{
@@ -45,7 +45,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - mongodb_data_container:/data/db
+      - C:/Users/binto/Desktop/Docker_Volumes/mongodb:/data/db
 
   note:
     depends_on:
@@ -58,6 +58,7 @@ services:
       - default
     environment:
       - "spring_data_mongodb_host=mongodb"
+      - "spring.data.mongodb.database=mediscreen_note"
       - "front.serviceUrl=http://mediscreen-front:8080"
       - "rapport.serviceUrl=http://mediscreen-rapport:8083"
 
@@ -90,5 +91,5 @@ services:
     restart: always
 
 volumes:
-  db:
-  mongodb_data_container:
+  mysqldb:
+  mongodb:
