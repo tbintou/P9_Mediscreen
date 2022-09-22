@@ -1,7 +1,6 @@
 package com.bintou.mediscreen.proximity;
 
 import com.bintou.mediscreen.model.Patient;
-//import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "mediscreen", url = "${mediscreen.serviceUrl}")
+@FeignClient(name = "mediscreen", url = "${patient.serviceUrl}")
 public interface PatientProximity {
 
     @GetMapping("/api/patients/{id}")

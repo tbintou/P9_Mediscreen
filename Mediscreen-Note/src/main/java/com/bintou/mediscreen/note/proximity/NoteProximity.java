@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "mediscreen-note", url = "${note.serviceUrl}")
+@FeignClient(name = "mediscreen-note", url = "${note.serviceUrl}")
 public interface NoteProximity {
 
     @GetMapping("/api/notes/patient/{patientId}")

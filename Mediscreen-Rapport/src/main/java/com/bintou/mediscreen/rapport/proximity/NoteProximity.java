@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "mediscreen-note", url = "${note.serviceUrl}", configuration = FeignPropagateBadRequestsConfiguration.class)
+@FeignClient(name = "mediscreen-note", url = "${note.serviceUrl:http://localhost:8082}", configuration = FeignPropagateBadRequestsConfiguration.class)
 public interface NoteProximity {
 
     @GetMapping("/api/notes/patient/{patientId}")
@@ -18,4 +18,5 @@ public interface NoteProximity {
 
     @GetMapping("/api/notes/patient")
     List<Note> findNoteByLastNameAndFirstName(@RequestParam("lastName") String patientLastName, @RequestParam("firstName") String patientFirstName);
+
 }

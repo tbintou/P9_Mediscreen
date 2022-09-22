@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "mediscreen-rapport", url = "${rapport.serviceUrl}", configuration = FeignPropagateBadRequestsConfiguration.class)
+@FeignClient(name = "mediscreen-rapport", url = "${rapport.serviceUrl:http://localhost:8083}", configuration = FeignPropagateBadRequestsConfiguration.class)
 public interface RapportProximity {
 
     @GetMapping("/rapports/patient/{patientId}")

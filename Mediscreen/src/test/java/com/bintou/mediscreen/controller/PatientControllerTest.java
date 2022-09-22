@@ -67,7 +67,7 @@ public class PatientControllerTest {
         patient.setPhone("");
 
         when(mockPatientService.savePatient(any(Patient.class))).thenReturn(patient);
-        mockMvc.perform(post("/api/patients")
+        mockMvc.perform(post("/api/patients/valid")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
                /* .andExpect(status().isCreated());
@@ -90,7 +90,7 @@ public class PatientControllerTest {
         patient.setPhone("200-333-4444");
 
         when(mockPatientService.findPatientById(200L)).thenReturn(patient);
-        mockMvc.perform(get("/api/patients/200")
+        mockMvc.perform(get("/api/patients/patient/200")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -100,7 +100,7 @@ public class PatientControllerTest {
     @Test
     public void findPatientByIdBadRequestTest() throws Exception {
         when(mockPatientService.findPatientById(81L)).thenReturn(null);
-        mockMvc.perform(get("/api/patients/41"))
+        mockMvc.perform(get("/api/patients/patient/41"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -131,7 +131,7 @@ public class PatientControllerTest {
         patientList.add(patient2);
 
         when(mockPatientService.findPatientByLastNameAndFirstName("Bertrand", "Batis")).thenReturn(patientList);
-        mockMvc.perform(get("/api/patients/patient")
+        mockMvc.perform(get("/api/patients/patient/family")
                         .param("lastName", "Bertrand")
                         .param("firstName", "Batis")
                         .contentType(MediaType.ALL))
@@ -145,7 +145,7 @@ public class PatientControllerTest {
     @Test
     public void findListPatientIsEmpty() throws Exception {
         when(mockPatientService.findPatientByLastNameAndFirstName("ddd", "ccccccc")).thenReturn(new ArrayList<>());
-        mockMvc.perform(get("/api/patients/patient")
+        mockMvc.perform(get("/api/patients/patient/family")
                         .param("lastName", "ddd")
                         .param("firstName", "ccccccc")
                         .contentType(MediaType.ALL))
@@ -166,7 +166,7 @@ public class PatientControllerTest {
         updatePatient.setPhone("5111-222-6666");
 
         when(mockPatientService.updatePatient(4L, updatePatient)).thenReturn(updatePatient);
-        mockMvc.perform(put("/api/patients/4")
+        mockMvc.perform(put("/api/patients/patient/4")
                         .contentType(MediaType.APPLICATION_JSON)
                        // .content(asJsonString(updatePatient))
                         .accept(MediaType.APPLICATION_JSON));
@@ -187,7 +187,7 @@ public class PatientControllerTest {
         updatedPatient.setPhone("5111-222-6666");
 
         when(mockPatientService.updatePatient(33L, updatedPatient)).thenReturn(updatedPatient);
-        mockMvc.perform(put("/api/patients/33")
+        mockMvc.perform(put("/api/patients/patient/33")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -207,7 +207,7 @@ public class PatientControllerTest {
         updatePatient.setPhone("5111-222-6666");
 
         when(mockPatientService.updatePatient(0L, updatePatient)).thenReturn(updatePatient);
-        mockMvc.perform(put("/api/patients/update/0")
+        mockMvc.perform(put("/api/patients/patient/0")
                         .contentType(MediaType.APPLICATION_JSON));
                 //.andExpect(status().isBadRequest());
     }
@@ -251,7 +251,7 @@ public class PatientControllerTest {
     @Test
     public void deletePatientByIdTest() throws Exception {
         when(mockPatientService.deletePatientById(0L)).thenReturn(true);
-        mockMvc.perform(delete("/api/patients/0")
+        mockMvc.perform(delete("/api/patients/patientId/0")
                         .contentType(MediaType.ALL))
                 .andExpect(status().isOk());
     }
@@ -259,7 +259,7 @@ public class PatientControllerTest {
     @Test
     public void deletePatientByIdReturn404() throws Exception {
         when(mockPatientService.deletePatientById(1111L)).thenReturn(false);
-        mockMvc.perform(delete("/api/patients/1111")
+        mockMvc.perform(delete("/api/patients/patientId/1111")
         ).andExpect(status().isNotFound());
     }
 

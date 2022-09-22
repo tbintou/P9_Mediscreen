@@ -1,0 +1,49 @@
+body {
+    background-color: #fdfef9;
+}
+
+.images-fluid {
+    height: 100%;
+    width:100%;
+}
+
+/* Modify brand and text color */
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: rgb(255, 255, 255)
+}
+
+.navbar-nav > li{
+  list-style-type: none;
+  padding-left:20px;
+  padding-right:20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: nowrap; /* assumes you only want one row */
+}
+
+       /* Modify the background color */
+         
+        .navbar-custom {
+            background-color: #01849A;
+}
+
+.input-group.input-group-unstyled input.form-control {
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+}
+.input-group-unstyled .input-group-addon {
+    border-radius: 4px;
+    border: 0px;
+    background-color: transparent;
+}
+
+.whitespaceprewrap {
+  white-space:pre-wrap!important
+ }
+
+ .bg-warning {
+   background-color: green;
+ }

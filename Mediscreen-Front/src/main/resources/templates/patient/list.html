@@ -3,35 +3,50 @@
       xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8"/>
-        <title>Accueil</title>
-        <link rel="stylesheet" href="../../css/bootstrap.min.css" >
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Liste des patients</title>
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/custom.css">
     </head>
     <body>
+        <div class="container mt-4">
+            <nav class="navbar navbar-light bg-light justify-content-between">
+                <img src="/images/mediscreen-logo.png" width="240" height="60" alt="Site logo">
+                <form class="form-inline">
+                    <!-- Search form -->
+                    <input class="form-control mr-sm-2" type="search" placeholder="Recherche..." aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="button"><i class="fas fa-search">🔎︎</i></button>
+                </form>
+            </nav>
+        </div>
+        <!-- Navigation -->
+        <div th:replace="fragments/general.html :: navigation"></div>
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <a href="/">Accueil</a>&nbsp;|&nbsp;
-                    <a href="/api/patients">Liste des patients</a>&nbsp;|&nbsp;
-                    <a href="#">Services d'évaluation</a>&nbsp;|&nbsp;
-                    <a href="#">Dossier</a>&nbsp;|&nbsp;
-                    <a href="#">Notes</a>
-                </div>
-                <div class="col-6 text-right">
-                    Utilisateur connecté est : <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
-                    <form th:action="@{/app-logout}" method="POST">
-                        <input type="submit" value="Déconnexion"/>
-                    </form>
                 </div>
             </div>
-            <div class="row"><h2>Liste des patients</h2></div>
+            <div class="row mt-4">
+                <h2 class="text-info">Liste des patients</h2>
+            </div>
+            <br/><br/>
+            <form th:action="@{/api/patients/patient/family}">
+                Filter: <input type="text" name="lastName" id="lastName" size="50" th:value="${lastName}" required />
+                         <input type="text" name="firstName" id="firstName" size="50" th:value="${firstName}" required />
+                &nbsp;
+                <input type="submit" value="Search" />
+                &nbsp;
+                <input type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
+            </form>
+            <br/><br/>
             <div class="row">
-                <a href="/api/patients/add" class="btn btn-primary btn-sm">Ajouter un nouveau patient</a>
+                <a href="/api/patients/patient" class="btn btn-primary btn-lg bg-info font-weight-bold "> + Ajouter un nouveau patient</a>
                 <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Prénom</th>
                         <th>Nom de famille</th>
+                        <th>Prénom</th>
                         <th>Date de naissance</th>
                         <th>Adresse postale</th>
                         <th>Numéro de téléphone</th>
@@ -40,23 +55,36 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr style="width: 10%" th:each="patients : ${patients}">
-                        <td th:text="${patients.id}">Id patient</td>
-                        <td th:text="${patients.firstName}">Prénom</td>
-                        <td th:text="${patients.lastName}">Nom de famille</td>
-                        <td th:text="${patients.birthDate}">Date de naissance</td>
-                        <td th:text="${patients.adress}">Adresse postale</td>
-                        <td th:text="${patients.phone}">Numéro de téléphone</td>
-                        <td style="width: 5%" th:text="${patients.gender}">Sexe</td>
-
+                    <tr th:each="patients : ${patients}">
+                        <td style="width: 2%" th:text="${patients.id}"></td>
+                        <td style="width: 8%" th:text="${patients.lastName}"></td>
+                        <td style="width: 7%" th:text="${patients.firstName}"></td>
+                        <td style="width: 8%" th:text="${patients.birthDate}"></td>
+                        <td style="width: 10%" th:text="${patients.adress}"></td>
+                        <td style="width: 8%" th:text="${patients.phone}"></td>
+                        <td style="width: 1%" th:text="${patients.gender}"></td>
                         <td style="width: 20%" class="text-center">
-                            <a th:href="@{/api/patients/update/{id}(id=${patients.getId()})}">Modifier &nbsp;</a>&nbsp;|&nbsp;
-                            <a th:href="@{/api/patients/delete/{id}(id=${patients.getId()})}">Supprimer</a>
+                            <div class="btn-toolbar">
+                                <a th:href="@{/api/patients/patient/{id}(id=${patients.getId()})}"><button type="button" class="btn btn-primary bg-warning btn-sm mr-2 mb-2 font-weight-bold text-dark btn btn-outline-light">Modifier</button></a>
+                                <a th:href="@{/api/patients/patientId/{id}(id=${patients.getId()})}"><button type="button" class="btn btn-primary btn-sm bg-danger mr-2 mb-2 font-weight-bold btn btn-outline-light">Supprimer</button></a>
+                                <a th:href="@{/api/notes/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm bg-success mr-2 mb-2 font-weight-bold btn btn-outline-light">Notes</button></a>
+                                <!--   <a th:href="@{/api/rapports/patient/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm mr-2 mb-2 font-weight-bold btn btn-outline-light">Rapport</button></a>-->
+                            </div>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <script type="text/javascript">
+                 function clearSearch() {
+                    window.location = "[[@{/patient/list}]]";
+                 }
+              </script>
+        <div class="container mt-4 md-4">
+            <!-- Footer -->
+            <div th:replace="fragments/general.html :: footer"></div>
+        </div>
     </body>
 </html>
+

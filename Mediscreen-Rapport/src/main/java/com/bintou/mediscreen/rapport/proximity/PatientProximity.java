@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 
-@FeignClient(name = "mediscreen", url = "${mediscreen.serviceUrl}", configuration = FeignPropagateBadRequestsConfiguration.class)
+@FeignClient(name = "mediscreen", url = "${patient.serviceUrl:http://localhost:8081}", configuration = FeignPropagateBadRequestsConfiguration.class)
 public interface PatientProximity {
 
     @GetMapping("/api/patients/{id}")

@@ -1,49 +1,54 @@
+
+
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <head>
-        <title> Mediscreen </title>
-        <link rel="stylesheet" href="/css/styles.css"/>
-        <link rel="stylesheet" href="../../css/bootstrap.min.css" >
-    </head>
-    <body>
-
-
-        <div class="container">
-            <div class="row">
-                <div class="card text-center mt-lg-1">
-                    <!--<div th:replace="~{/header::topbar}"></div>-->
-
-                    <h3 style="margin-top: 0.5em; margin-left: 0.5em;"> Page d'accueil </h3>
-                    <p style="margin-top: 0.5em; margin-left: 0.75em;">
-                        <span th:text="${name}"></span> <br>
-                        <a href="/login"> Déconnexion </a>
-                        <a style=" margin-left: 1em;" href="/user/list" sec:authorize="hasAuthority('ADMIN')"> Gestion des utilisateurs </a>
-                        <a style=" margin-left: 1em;" href="/api/patients"> Liste des patients </a>
-                    </p>
-
-                    <div class="card-body">
-
-                        <div class="col-sm-6 cardcontact">
-                            <div class="card mb-3" style="max-width: 100%;">
-                                <div class="row d-0">
-                                    <div class="col-md-4">
-                                        <img src="../../images/home.png" class="img-fluid rounded-start" alt="...">
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Card title</h5>
-                                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div th:replace="~{/footer::footer}"></div>-->
-                </div>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport"
+         content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>Mediscreen</title>
+      <link rel="stylesheet" href="../../css/custom.css">
+      <link rel="stylesheet" href="../../css/bootstrap.min.css">
+      <link rel="icon" type="image/png" href="../../images/icon.png" />
+   </head>
+   <body>
+      <div class="container mt-4">
+         <nav class="navbar navbar-light bg-light justify-content-between">
+            <img src="/images/mediscreen-logo.png" width="240" height="60" alt="Site logo">
+            <form class="form-inline">
+               <!-- Search form -->
+               <input class="form-control mr-sm-2" type="search" placeholder="Recherche..." aria-label="Search">
+               <button class="btn btn-outline-success my-2 my-sm-0" type="button"><i class="fas fa-search">🔎︎</i></button>
+            </form>
+         </nav>
+      </div>
+      <!-- Navigation -->
+      <div th:replace="fragments/general.html :: navigation"></div>
+      <div class="container">
+         <div class="row">
+            <div class="col-12 col-md-12 order-lg-2 col-lg-9 px-0">
+               <img th:src="@{/images/home.png}" class="images-fluid"
+                  alt="MediScreen image">
             </div>
-        </div>
-
-    </body>
+            <div class="col-12 col-md-12 order-lg-1 col-lg-3 px-1 pt-2 text-left ">
+               <p>
+               <h2 class="text-primary text-bold font-weight-bold text-info pt-4">Nous sommes attentifs.</h2>
+               <br>
+               Mediscreen est spécialisé dans la détection des facteurs de risque de maladie.
+               Nos dépistages utilisent une analyse prévisionnelle des publics de patients à
+               un prix abordable.
+               </p>
+               <ul>
+                  <li>Vous êtes une clinique ou un cabinet de petite taille ou rural ?</li>
+                  <li>Avez-vous besoin d'un dépistage des maladies cardiaques ou des symptômes de l'hypertension ?</li>
+               </ul>
+               <h5 class="text-primary text-bold font-weight-bold text-info pt-4">
+                  Nous avons la solution pour vous.</h5>
+            </div>
+         </div>
+      </div>
+      <!-- Footer -->
+      <div th:replace="fragments/general.html :: footer"></div>
+   </body>
 </html>
+

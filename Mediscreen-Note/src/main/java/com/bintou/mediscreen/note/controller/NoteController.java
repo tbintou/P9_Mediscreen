@@ -96,7 +96,7 @@ public class NoteController {
         return new ResponseEntity<>(noteList, HttpStatus.OK);
     }
 
-    @DeleteMapping("/notes/{id}")
+    @DeleteMapping("/notes/note/{id}")
     @ApiOperation(value = "Supprimer les notes du patient par son id")
     public ResponseEntity<Object> deleteNoteById(@PathVariable("id") Long id) {
         Boolean deletedNoteById = noteService.deleteNoteById(id);

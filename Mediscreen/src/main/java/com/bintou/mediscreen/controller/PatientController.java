@@ -32,7 +32,7 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @PostMapping("/patients")
+    @PostMapping("/patients/valid")
     @ApiOperation("Créer un nouveau patient")
     public ResponseEntity<Object> createdPatient(@RequestBody @Valid Patient patient, BindingResult bindingResult) throws ValidationErrorHandlerController {
         ResponseEntity<Object> message = getBindingResultErrors(bindingResult);
@@ -43,7 +43,7 @@ public class PatientController {
         return new ResponseEntity<>(newPatient, HttpStatus.CREATED);
     }
 
-    @GetMapping("/patients/{id}")
+    @GetMapping("/patients/patient/{id}")
     @ApiOperation("Chercher un patient par son id")
     public ResponseEntity<Object> findPatientById(@PathVariable(value = "id") Long id) {
         Patient patient = patientService.findPatientById(id);
@@ -54,7 +54,7 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    @GetMapping("/patients/patient")
+    @GetMapping("/patients/patient/family")
     @ApiOperation("Chercher un patient par son nom de famille")
     public ResponseEntity<List<Patient>> findPatientByLastNameAndFirstName(@RequestParam(value = "lastName") String lastName, @RequestParam(value = "firstName") String firstName) {
         List<Patient> patientList = patientService.findPatientByLastNameAndFirstName(lastName, firstName);
@@ -66,7 +66,7 @@ public class PatientController {
         return new ResponseEntity<>(patientList, HttpStatus.OK);
     }
 
-    @PutMapping("/patients/{id}")
+    @PutMapping("/patients/patient/{id}")
     @ApiOperation("Mise à jour les données du patient par son id")
     public ResponseEntity<Object> updatePatient(@PathVariable(value = "id") Long id, @Valid @RequestBody Patient patient, BindingResult result) throws ValidationErrorHandlerController {
         ResponseEntity<Object> messages = getBindingResultErrors(result);
@@ -87,7 +87,7 @@ public class PatientController {
         return new ResponseEntity<>(patientList, HttpStatus.OK);
     }
 
-    @DeleteMapping("/patients/{id}")
+    @DeleteMapping("/patients/patientId/{id}")
     @ApiOperation("Supprimer un patient par son id")
     public ResponseEntity<Object> deletePatientById(@PathVariable(value = "id") Long id) {
         Boolean deleted = patientService.deletePatientById(id);

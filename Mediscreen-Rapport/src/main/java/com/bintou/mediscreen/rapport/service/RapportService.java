@@ -3,19 +3,13 @@ package com.bintou.mediscreen.rapport.service;
 import com.bintou.mediscreen.rapport.config.FeignBadResponseWrapper;
 import com.bintou.mediscreen.rapport.model.Note;
 import com.bintou.mediscreen.rapport.model.Patient;
-import com.bintou.mediscreen.rapport.model.Rapport;
-import com.bintou.mediscreen.rapport.model.Status;
 import com.bintou.mediscreen.rapport.proximity.NoteProximity;
 import com.bintou.mediscreen.rapport.proximity.PatientProximity;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 

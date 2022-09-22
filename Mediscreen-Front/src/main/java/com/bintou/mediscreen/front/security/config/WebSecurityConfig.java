@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/registration","/css/**","/js/**", "/images/**").permitAll()
                 .antMatchers("/user/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/api/patients/**").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers("/**").hasAnyAuthority("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

@@ -1,78 +1,104 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8"/>
-    <title>Accueil</title>
-    <link rel="stylesheet" href="../../css/bootstrap.min.css" >
-</head>
-<body>
-<div class="container">
-
-    <div class="row">
-        <h2>Ajouter un nouveau patient</h2>
-    </div>
-
-    <div class="row">
-        <form action="#" th:action="@{/api/patients/validate}" th:object="${patient}" method="post" class="form-horizontal" style="width: 100%">
-
-            <div class="form-group">
-                <label for="firstName" class="col-sm-2 control-label">Prénom</label>
-                <div class="col-sm-10">
-                    <input type="text" th:field="*{firstName}" id="firstName" placeholder="Prénom" class="col-4">
-                    <p class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Ajouter un nouveau patient</title>
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/custom.css">
+    </head>
+    <body>
+        <div class="container mt-4">
+            <nav class="navbar navbar-light bg-light justify-content-between">
+                <img src="/images/mediscreen-logo.png" width="240" height="60" alt="Site logo">
+                <form class="form-inline">
+                    <!-- Search form -->
+                    <input class="form-control mr-sm-2" type="search" placeholder="Recherche..." aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="button"><i class="fas fa-search">🔎︎</i></button>
+                </form>
+            </nav>
+        </div>
+        <!-- Navigation -->
+        <div th:replace="fragments/general.html :: navigation"></div>
+        <div class="container">
+            <br/>
+            <div class="row mt-4">
+                <div class="col-6">
+                </div>
+                <div class="col-6 text-right">
+                    <a href="/api/patients"><button type="button" class="btn btn-primary bg-warning btn-sm mr-2 mb-2 font-weight-bold text-dark btn btn-outline-light"> ☛ Retour à la liste des patients</button></a>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label for="lastName" class="col-sm-2 control-label">Nom de famille</label>
-                <div class="col-sm-10">
-                    <input type="text" th:field="*{lastName}" id="lastName" placeholder="Nom de famille" class="col-4">
-                    <p class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
-                </div>
+            <div class="row">
+                <h2 class="text-info">Ajouter un nouveau patient</h2>
             </div>
-
-            <div class="form-group">
-                <label for="birthDate" class="col-sm-2 control-label">Date de naissance</label>
-                <div class="col-sm-10">
-                    <input type="date" th:field="*{birthDate}" id="birthDate" placeholder="Date de naissance" class="col-4">
-                    <p class="text-danger" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
-                </div>
+            <br/>
+            <div class="row">
+                <form action="#" th:action="@{/api/patient/valid}" th:object="${patient}" method="post" class="form-horizontal"
+                      style="width: 100%">
+                    <div th:if="${param.error}">
+                        <div class="alert alert-info">L'enregistrement a échoué. Ce patient est peut-être déjà enregistré</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="col-sm-2 control-label">Nom de famille</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{lastName}" id="lastName" placeholder="Nom de famille" class="col-4">
+                            <p class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName" class="col-sm-2 control-label">Prénom</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{firstName}" id="firstName" placeholder="Prénom" class="col-4">
+                            <p class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate" class="col-sm-2 control-label">Date de naissance</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{birthDate}" id="birthDate" placeholder="yyyy-MM-dd" class="col-4">
+                            <p class="text-danger" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="adress" class="col-sm-2 control-label">Adresse postale</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{adress}" id="adress" placeholder="Adresse postale (facultatif)" class="col-4">
+                            <p class="text-danger" th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="col-sm-2 control-label">Numéro de téléphone</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{phone}" id="phone" placeholder="Numéro de téléphone (facultatif)" class="col-4">
+                            <p class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender" class="col-sm-2 control-label">Sexe</label>
+                        <div class="col-sm-10">
+                            <input type="text" th:field="*{gender}" id="gender" placeholder="Sexe" class="col-4">
+                            <p class="text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <a class="btn btn-danger btn-sm" href="/api/patients">Annuler</a>
+                            <input class="btn btn-primary btn-sm" type="submit" value="Ajouter le(a) patient(e)">
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <div class="form-group">
-                <label for="adress" class="col-sm-2 control-label">Adresse postale</label>
-                <div class="col-sm-10">
-                    <input type="text" th:field="*{adress}" id="adress" placeholder="Adresse postale" class="col-4">
-                    <p class="text-danger" th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}"></p>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="phone" class="col-sm-2 control-label">Numéro de téléphone</label>
-                <div class="col-sm-10">
-                    <input type="tel" th:field="*{phone}" id="phone" placeholder="Numéro de téléphone" class="col-4">
-                    <p class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="phone" class="col-sm-2 control-label">Sexe</label>
-                <div class="col-sm-10">
-                    <label class="checkbox-inline"><input type="radio" th:field="*{gender}" th:value="F">F</label>
-                    <label class="checkbox-inline"><input type="radio" th:field="*{gender}" th:value="M">M</label>
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <a class="btn btn-danger btn-sm" th:href="@{/api/patients}">Annuler</a>
-                    <input class="btn btn-primary btn-sm" type="submit" value="Ajouter le(a) patient(e)">
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-</body>
+        </div>
+        <div class="container mt-4 md-4">
+            <!-- Footer -->
+            <div th:replace="fragments/general.html :: footer"></div>
+            <script src="/webjars/jquery/3.6.0/jquery.slim.min.js"></script>
+            <script type="text/javascript"
+                    src="/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+        </div>
+    </body>
 </html>
+

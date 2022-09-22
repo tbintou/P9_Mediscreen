@@ -14,8 +14,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class Patient {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Pattern(regexp="^[A-Za-z]*$", message = "Le prénom doit être de type text sans espace")
