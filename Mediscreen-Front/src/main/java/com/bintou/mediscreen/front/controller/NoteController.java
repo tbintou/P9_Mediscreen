@@ -28,88 +28,88 @@ public class NoteController {
         this.noteProximity = noteProximity;
     }
 
-    @GetMapping("/note/{id}")
+    @GetMapping("/notes/{id}")
     public String addNoteForm(@PathVariable("id") final Long patientId, final Model model) {
 
-        log.debug(" *** UI -GET /note/add/{id} called");
+        log.debug(" *** Méthode - GET /api/note/form/{id}");
 
         Note note = new Note();
         note.setPatientId(patientId);
         model.addAttribute("note", note);
 
-        log.info(" *** UI - note add page displyaed successfully");
+        log.info(" *** La page d'ajout de note a été distribuée avec succès");
 
         return "note/add";
     }
 
     @PostMapping("/note/valid")
-    public String validate(@Valid final Note note, final BindingResult result) {
+    public String validate(@Valid Note note, BindingResult result, Model model, String id) {
 
-        log.debug(" *** UI - POST /note/validate requested");
+        log.debug(" *** Méthode - POST /api/note/valid");
 
-        if (result.hasErrors()) {
-            return "note/add";
-        } else {
+        if (!result.hasErrors()) {
             this.noteProximity.createdNote(note);
 
-            log.info(" *** UI - note added successfully");
+            model.addAttribute("note", noteProximity.findNoteById(id));
+            log.info(" *** La note a été ajoutée avec succès");
 
-            return "redirect:/api/notes/" + note.getPatientId();
+            return "redirect:/api/notes/list/" + note.getPatientId();
         }
+        return "note/add";
     }
 
-    @GetMapping("/notes/{id}")
-    public String getUpdateForm(@PathVariable("id") final Long noteId, final Model model) {
+    @GetMapping("/note/{id}")
+    public String getUpdateForm(@PathVariable("id") final String noteId, final Model model) {
 
-        log.debug(" *** UI - GET /note/update/{id} requested");
+        log.debug(" *** Méthode - GET /api/note/{id}");
 
         Note note = this.noteProximity.findNoteById(noteId);
         model.addAttribute("note", note);
 
-        log.info(" *** UI - note update page displyaed successfully");
+        log.info(" *** Les notes ont été mise à jour avec succès");
 
         return "note/update";
     }
 
-    @PostMapping("/notes/{id}")
-    public String updateNotes(@PathVariable("id") final Long noteId, @Valid final Note note, final BindingResult result) {
+    @PostMapping("/note/{id}")
+    public String updateNotes(@PathVariable("id") String noteId, @Valid Note note, BindingResult result) {
 
-        log.debug(" *** UI - POST /note/update/{id} requested");
+        log.debug(" *** Méthode - POST /api/note/{id}");
 
-        if (result.hasErrors()) {
+        if (!result.hasErrors()) {
             return "note/update";
         } else {
             this.noteProximity.updateNotes(noteId, note);
 
-            log.info(" *** UI - note update successfully");
+            log.info(" *** Les notes ont été mise à jour avec succès");
 
-            return "redirect:/api/notes/" + note.getPatientId();
+            return "redirect:/api/notes/list/" + note.getId();
         }
     }
 
-    @GetMapping("/notes")
+    @GetMapping("/notes/list/{id}")
     public String findAllNote(@PathVariable("id") final Long patientId, final Model model) {
 
-        log.debug(" *** UI - GET /note/list/{id} - called");
+        log.debug(" *** Méthode - GET /api/note/list/{id} ");
 
         model.addAttribute("patientId", patientId);
-        model.addAttribute("notes", this.noteProximity.findAllNote());
+        model.addAttribute("notes", this.noteProximity.findAllNote(patientId));
 
-        log.info(" *** UI - note list returned successfully");
+        log.info(" *** Liste des notes retournée avec succès ");
 
         return "note/list";
     }
 
-    @GetMapping("/notes/note/{id}")
-    public String deleteNoteById(@PathVariable("id") final Long noteId, @PathVariable("patientId") final Long patientId) {
+    @GetMapping("/notes/note/{id}/{patientId}")
+    public String deleteNoteById(@PathVariable("id") final String noteId, @PathVariable("patientId") final Long patientId) {
 
-        log.debug("GET /note/delete/{id}/{patientId} called");
+        log.debug(" Méthode GET /api/notes/note/{id}/{patientId}");
 
         this.noteProximity.deleteNoteById(noteId);
 
-        log.info(" *** UI - nnote deleted successfully");
+        log.info(" *** Note supprimé avec succès");
 
-        return "redirect:/api/notes/" + patientId;
+        return "redirect:/api/notes/list/" + patientId;
 
     }
 

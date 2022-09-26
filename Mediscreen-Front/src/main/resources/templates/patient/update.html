@@ -36,7 +36,7 @@
             </div>
             <br/>
             <div class="row mt-4">
-                <form action="#" th:action="@{/api/patients/patient/{id}(id=${patient.id})}" th:object="${patient}" method="post"
+                <form action="#" th:action="@{/api/patients/patient/{id}(id=${patient.getId()})}" th:object="${patient}" method="post"
                       class="form-horizontal" style="width: 100%">
                     <div class="form-group">
                         <label for="lastName" class="col-sm-2 control-label">Nom de famille</label>

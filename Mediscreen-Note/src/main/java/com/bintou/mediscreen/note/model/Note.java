@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -20,10 +21,11 @@ import java.util.Date;
 @Document(collection = "note")
 public class Note {
 
-    private Long id;
+    @Id
+    private String id;
 
     @Field(value = "patientId")
-    private Long patientId;
+    private Integer patientId;
 
     @Field(value = "lastName")
     private String patientLastName;
@@ -31,12 +33,22 @@ public class Note {
     @Field(value = "firstName")
     private String patientFirstName;
 
+    @Field(value = "dateNote")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate dateNote;
+
     @NotBlank(message = "Le champ note est obligatoire")
     @Field(value = "note")
     private String note;
 
-    @Field(value = "dateNote")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateNote;
+    public Note(Integer patientId, LocalDate date, String note) {
+
+    }
+
+    public Note(Integer patientId, String patientLastName, String patientFirstName, LocalDate dateNote, String note) {
+
+    }
+
+    public Note(String s, int i, LocalDate date, String s1) {
+    }
 }

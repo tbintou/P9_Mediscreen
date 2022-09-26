@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -21,12 +21,12 @@ public class NoteRepositoryTest {
 
     @Test
     public void noteTest() throws ParseException {
-        String dateNoteStr = "2022-08-22 15:17:32";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateNote = LocalDateTime.parse(dateNoteStr, formatter);
+        String dateNoteStr = "2022-08-22";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateNote = LocalDate.parse(dateNoteStr, formatter);
 
         Note note = new Note();
-        note.setId(1L);
+        note.setId("1L");
         note.setPatientLastName("Jack");
         note.setPatientFirstName("Test");
         note.setNote("Rien à signaler");
@@ -38,22 +38,22 @@ public class NoteRepositoryTest {
         Assertions.assertEquals(note.getPatientLastName(), "Jack");
 
         // FindByPatientId
-        Long patientId = 7L;
+        Integer patientId = 7;
         note.setPatientId(patientId);
         List<Note> notePatientList = noteRepository.findByPatientId(patientId);
         Assertions.assertTrue(notePatientList.size() > 0);
 
         //FindById
-        Long id = 1L;
+        String id = "1L";
         note.setId(id);
         Optional<Note> noteOptional = noteRepository.findById(id);
         Assertions.assertTrue(noteOptional.isPresent());
 
-        //FindByLastName
+        /*FindByLastName
         String lastName = "Jack";
         String firstName = "Test";
         List<Note> noteListByLastNameAndFirstName = noteRepository.findByPatientLastNameAndPatientFirstName(lastName, firstName);
-        Assertions.assertTrue(noteListByLastNameAndFirstName.size() > 0);
+        Assertions.assertTrue(noteListByLastNameAndFirstName.size() > 0);*/
 
         // Update
         note.setPatientLastName("TestJean");
@@ -65,7 +65,7 @@ public class NoteRepositoryTest {
         Assertions.assertTrue(noteList.size() > 0);
 
         //Delete
-        Long idNote = note.getId();
+        String idNote = note.getId();
         noteRepository.delete(note);
         Optional<Note> optionalNote = noteRepository.findById(idNote);
         Assertions.assertFalse(optionalNote.isPresent());

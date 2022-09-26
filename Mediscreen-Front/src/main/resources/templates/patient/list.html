@@ -31,8 +31,8 @@
             </div>
             <br/><br/>
             <form th:action="@{/api/patients/patient/family}">
-                Filter: <input type="text" name="lastName" id="lastName" size="50" th:value="${lastName}" required />
-                         <input type="text" name="firstName" id="firstName" size="50" th:value="${firstName}" required />
+                Filter: <input type="text" name="lastName" id="lastName" size="30" th:value="${lastName}" required />
+                         <input type="text" name="firstName" id="firstName" size="30" th:value="${firstName}" required />
                 &nbsp;
                 <input type="submit" value="Search" />
                 &nbsp;
@@ -65,9 +65,9 @@
                         <td style="width: 1%" th:text="${patients.gender}"></td>
                         <td style="width: 20%" class="text-center">
                             <div class="btn-toolbar">
-                                <a th:href="@{/api/patients/patient/{id}(id=${patients.getId()})}"><button type="button" class="btn btn-primary bg-warning btn-sm mr-2 mb-2 font-weight-bold text-dark btn btn-outline-light">Modifier</button></a>
-                                <a th:href="@{/api/patients/patientId/{id}(id=${patients.getId()})}"><button type="button" class="btn btn-primary btn-sm bg-danger mr-2 mb-2 font-weight-bold btn btn-outline-light">Supprimer</button></a>
-                                <a th:href="@{/api/notes/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm bg-success mr-2 mb-2 font-weight-bold btn btn-outline-light">Notes</button></a>
+                                <a th:href="@{/api/patients/patient/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary bg-warning btn-sm mr-2 mb-2 font-weight-bold text-dark btn btn-outline-light">Modifier</button></a>
+                                <a th:href="@{/api/patients/patientId/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm bg-danger mr-2 mb-2 font-weight-bold btn btn-outline-light">Supprimer</button></a>
+                                <a th:href="@{/api/notes/list/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm bg-success mr-2 mb-2 font-weight-bold btn btn-outline-light">Notes</button></a>
                                 <!--   <a th:href="@{/api/rapports/patient/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm mr-2 mb-2 font-weight-bold btn btn-outline-light">Rapport</button></a>-->
                             </div>
                         </td>
@@ -78,7 +78,7 @@
         </div>
         <script type="text/javascript">
                  function clearSearch() {
-                    window.location = "[[@{/patient/list}]]";
+                    window.location = "[[@{/api/patients}]]";
                  }
               </script>
         <div class="container mt-4 md-4">

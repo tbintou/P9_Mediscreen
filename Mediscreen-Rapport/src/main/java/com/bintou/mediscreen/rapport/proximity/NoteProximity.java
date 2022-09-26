@@ -16,6 +16,9 @@ public interface NoteProximity {
     @GetMapping("/api/notes/patient/{patientId}")
     ResponseEntity<List<Note>> findByPatientId(@PathVariable(value = "patientId") Long patientId);
 
+    @GetMapping("/api/note/{id}")
+    List<Note> findNoteById(@PathVariable("id") final String noteId);
+
     @GetMapping("/api/notes/patient")
     List<Note> findNoteByLastNameAndFirstName(@RequestParam("lastName") String patientLastName, @RequestParam("firstName") String patientFirstName);
 

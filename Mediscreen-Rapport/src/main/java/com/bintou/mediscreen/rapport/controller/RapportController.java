@@ -27,8 +27,8 @@ public class RapportController {
 
     @GetMapping("/rapports/patient/{patientId}")
     @ApiOperation("Générer une évaluation du diabète par l'ID du patient")
-    public ResponseEntity<String> getRiskAssessment(@PathVariable(value = "patientId") Long patientId) {
-        String risk = rapportService.calculateRiskByPatientId(patientId);
+    public ResponseEntity<String> getRiskAssessment(@PathVariable(value = "patientId") Long patientId, String id) {
+        String risk = rapportService.calculateRiskByPatientId(id, patientId);
         if (risk == null) {
             log.info("Aucune donnée trouvée avec ce patientId : " + patientId);
             return new ResponseEntity<>("Aucune donnée trouvée avec ce patientId : " + patientId, HttpStatus.BAD_REQUEST);

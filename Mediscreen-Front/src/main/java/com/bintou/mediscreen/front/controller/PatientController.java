@@ -63,26 +63,18 @@ public class PatientController {
     @PostMapping("/patients/patient/{id}")
     public String updatePatient(@PathVariable("id") Long id, @Valid Patient patient, BindingResult result, Model model) {
 
-        if (result.hasErrors()) {
-            return "patient/update";
-        }
-        Boolean updated = patientProximity.updatePatient(id, patient);
-        if(updated) {
-            model.addAttribute("patient", patientProximity.findAllPatients());
-        }
-        return "redirect:/api/patients";
-    }
+        log.debug(" *** Méthode - POST /api/patients/patient/{id} : {}", id);
+        if (!result.hasErrors()) {
+            this.patientProximity.updatePatient(id, patient);
 
-   /* @RolesAllowed("USER")
-    @GetMapping("/patients/patient/{id}")
-    public String findPatientById(@PathVariable("id") Long id, Model model) {
-        if (id == null){
-            throw new IllegalArgumentException("Il n'existe pas de patient avec cet id : " + id);
+            model.addAttribute("patient", patientProximity.findAllPatients());
+            log.info(" *** Le patient a été mis à jour avec succès");
+
+            return "redirect:/api/patients";
+
         }
-        Patient patient = patientProximity.findPatientById(id);
-        model.addAttribute("patient", patient);
-        return "redirect:/api/patients";
-    }*/
+        return "patient/update";
+    }
 
     @RolesAllowed("USER")
     @GetMapping("/patients/patient/family")

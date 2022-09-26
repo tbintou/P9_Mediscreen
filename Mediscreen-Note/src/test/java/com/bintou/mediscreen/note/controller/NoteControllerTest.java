@@ -1,282 +1,177 @@
 package com.bintou.mediscreen.note.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+
 import com.bintou.mediscreen.note.MediscreenNoteApplication;
-import com.bintou.mediscreen.note.exception.ResourceNotFoundException;
-import com.bintou.mediscreen.note.model.Note;
+import com.bintou.mediscreen.note.model.NoteDTO;
+import com.bintou.mediscreen.note.repository.NoteRepository;
 import com.bintou.mediscreen.note.service.NoteService;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.MOCK, classes={ MediscreenNoteApplication.class })
-public class NoteControllerTest {
+class NoteControllerTest {
+
+    @MockBean
+    private NoteService noteService;
+
+    @Mock
+    private NoteRepository noteRepository;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    private ObjectMapper mapper;
 
-    @MockBean
-    private NoteService noteService;
+    @Autowired
+    private WebApplicationContext context;
 
-    private Note note = new Note();
-    String exceptionParam = "not_found";
+    private NoteDTO noteDTO;
 
+    private final static String NOTE_ADD_URL = "/api/notes/";
+    private final static String NOTE_GET_URL = "/api/note/";
+    private final static String NOTE_LIST_URL = "/api/notes/list/";
+    private final static String NOTE_UPDATE_URL = "/api/notes/patient/";
+    private final static String NOTE_DELETE_URL = "/api/notes/note/";
 
-    @BeforeAll
+    private LocalDate date = LocalDate.now();
+
+    @BeforeEach
     public void setUp() {
-        this.mockMvc = webAppContextSetup(webApplicationContext).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
     @Test
-    public void createdNoteTestReturnOK() throws Exception {
-        note.setId(230L);
-        note.setPatientId(70L);
-        note.setPatientLastName("Macron");
-        note.setPatientFirstName("Bernard");
-        note.setNote("Ajout des nouvelles notes");
-        note.setDateNote(LocalDateTime.of(1, 8, 1, 1,1));
+    public void createdNoteTest() throws Exception {
 
-        when(noteService.saveNote(note)).thenReturn(note);
-        mockMvc.perform(post("/api/notes")
-                        .accept(MediaType.APPLICATION_JSON));
-               /* .andExpect(status().isCreated());
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(230L))
-                .andExpect(jsonPath("$.note").value("Ajout des nouvelles notes"));*/
+        noteDTO = new NoteDTO();
+        noteDTO.setId("632d9950d35a776550adfa4d");
+        noteDTO.setPatientId(2);
+        noteDTO.setDateNote(date);
+        noteDTO.setNote("note");
+
+        when(noteService.saveNote(noteDTO)).thenReturn(noteDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(NOTE_ADD_URL)
+                        .content(mapper.writeValueAsString(noteDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
     }
 
     @Test
-    public void findNoteByPatientIdTestReturnOK() throws Exception {
-        note.setDateNote(LocalDateTime.of(2022, 8, 24, 10,20,30));
-        note.setId(2L);
-        note.setPatientLastName("Jean");
-        note.setPatientId(4L);
-        note.setPatientFirstName("Pierre");
-        note.setNote("Test COVID positive ");
-        List<Note> noteList = new ArrayList<>();
-        noteList.add(note);
+    public void findNoteByIdTest() throws Exception {
 
-        when(noteService.findByPatientId(4L)).thenReturn(noteList);
-        mockMvc.perform(get("/api/notes/patient/4")
-                        .accept(MediaType.APPLICATION_JSON))
+        NoteDTO noteDTO = new NoteDTO();
+        noteDTO.setId("632d9950d35a776550adfa4d");
+        noteDTO.setPatientId(2);
+        noteDTO.setDateNote(date);
+        noteDTO.setNote("note");
+
+        when(noteService.findNoteById("632d9950d35a776550adfa4d")).thenReturn(noteDTO);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .get(NOTE_GET_URL + "632d9950d35a776550adfa4d")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].note").value("Test COVID positive "));
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        assertThat(content).contains("");
+        verify(noteService).findNoteById("632d9950d35a776550adfa4d");
     }
 
     @Test
-    public void findNoteByPatientIdTestReturnNull() throws Exception {
-        when(noteService.findByPatientId(0L)).thenReturn(new ArrayList<>());
-        mockMvc.perform(get("/api/notes/patient/0", exceptionParam))
-            .andExpect(status().isNotFound())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
-            .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
-    }
+    public void findAllNoteTest() throws Exception {
 
-    @Test
-    public void findNoteByIdTestReturnOK() throws Exception {
-        note.setDateNote(LocalDateTime.of(4, 5, 7, 5, 9));
-        note.setId(22L);
-        note.setPatientId(32L);
-        note.setPatientLastName("Macron");
-        note.setPatientFirstName("Bernard");
-        note.setNote("Notes du patient");
+        NoteDTO noteDTO1 = new NoteDTO();
+        noteDTO1.setId("632d9950d35a776550adfa4d");
+        noteDTO1.setPatientId(2);
+        noteDTO1.setDateNote(date);
+        noteDTO1.setNote("note1");
 
-        when(noteService.findNoteById(22L)).thenReturn(note);
-        mockMvc.perform(get("/api/notes/22")
-                        .accept(MediaType.APPLICATION_JSON))
+        NoteDTO noteDTO2 = new NoteDTO();
+        noteDTO2.setId("632d9b1777f6c14ebd00e4ee");
+        noteDTO2.setPatientId(2);
+        noteDTO2.setDateNote(date);
+        noteDTO2.setNote("note2");
+
+        when(noteService.findAllNote(2)).thenReturn(Arrays
+                .asList(noteDTO1, noteDTO2));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .get(NOTE_LIST_URL + 2)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.note").value("Notes du patient"));
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        verify(noteService).findAllNote(2);
+        assertThat(content).contains("note1", "note2");
     }
 
     @Test
-    public void findNoteByIdTestReturnNull() throws Exception {
-        when(noteService.findNoteById(1L)).thenReturn(null);
-        mockMvc.perform(get("/api/notes/1", exceptionParam))
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
-                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
-    }
+    public void updateNoteTest() throws Exception {
 
-    @Test
-    public void findNoteByLastNameAndFirstNameTestReturnOK() throws Exception {
-        Note note1 = new Note();
-        note1.setDateNote(LocalDateTime.of(4, 5, 7, 5, 9));
-        note1.setId(22L);
-        note1.setPatientId(32L);
-        note1.setPatientLastName("Macron");
-        note1.setPatientFirstName("Bernard");
-        note1.setNote("Notes du patient 1");
+        NoteDTO noteDTO = new NoteDTO();
+        noteDTO.setId("632d9b1777f6c14ebd00e4ee");
+        noteDTO.setPatientId(2);
+        noteDTO.setDateNote(date);
+        noteDTO.setNote("note updated");
 
-        Note note2 = new Note();
-        note2.setDateNote(LocalDateTime.of(1, 1, 1, 1, 1));
-        note2.setId(26L);
-        note2.setPatientId(29L);
-        note2.setPatientLastName("Macron");
-        note2.setPatientFirstName("Bernard");
-        note2.setNote("Notes du patient 2");
+        when(noteService.updateNote(anyString(), any(NoteDTO.class))).thenReturn(noteDTO);
 
-        List<Note> noteList = new ArrayList<>();
-        noteList.add(note1);
-        noteList.add(note2);
-
-        when(noteService.findNoteByLastNameAndFirstName("Macron", "Bernard")).thenReturn(noteList).thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(get("/api/notes/patient")
-                        .param("lastName", "Macron")
-                        .param("firstName", "Bernard")
-                        .contentType(MediaType.ALL))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(NOTE_UPDATE_URL + 2)
+                        .content(mapper.writeValueAsString(noteDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$..*").isNotEmpty())
-                .andExpect(jsonPath("$.[0].patientLastName").value( "Macron"))
-                .andExpect(jsonPath("$.[0].patientFirstName").value("Bernard"))
-                .andExpect(jsonPath("$.[1].patientLastName").value("Macron"))
-                .andExpect(jsonPath("$.[1].patientFirstName").value("Bernard"));
-    }
+                .andReturn();
 
-   @Test
-    public void findNoteByLastNameAndFirstNameTestReturnNull() throws Exception {
-       List<Note> noteList = new ArrayList<>();
-        when(noteService.findNoteByLastNameAndFirstName("Macron", "Bernard")).thenReturn(noteList);
-        mockMvc.perform(get("/api/notes/patient", exceptionParam)
-                        .param("lastName", "Macron")
-                        .param("firstName", "Bernard"))
-               .andExpect(status().isNotFound())
-               .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
-               .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
+        String content = result.getResponse().getContentAsString();
+
+        assertThat(content).contains("note updated");
+        verify(noteService).updateNote(anyString(), any(NoteDTO.class));
     }
 
     @Test
-    public void updateNotesTestReturnOK() throws Exception {
-        Note updateNote = new Note();
-        updateNote.setDateNote(LocalDateTime.of(4, 5, 7, 5, 9));
-        updateNote.setId(2L);
-        updateNote.setPatientId(2L);
-        updateNote.setPatientLastName("Macron");
-        updateNote.setPatientFirstName("Bernard");
-        updateNote.setNote("Mise à jour des notes du patient");
+    public void deleteNoteByIdTest() throws Exception {
 
-        when(noteService.updateNote(2L, updateNote)).thenReturn(updateNote);
-        mockMvc.perform(put("/api/notes/22")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
-               /* .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.patientLastName").value( "Macron"))
-                .andExpect(jsonPath("$.note").value( "Mise à jour des notes du patient"));*/
+        mockMvc.perform(MockMvcRequestBuilders.delete(NOTE_DELETE_URL + "632d9b1777f6c14ebd00e4ee")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(noteService).deleteNoteById("632d9b1777f6c14ebd00e4ee");
+
     }
-
-   @Test
-    public void updateNotesTestReturnNull() throws Exception {
-        Note updateNote = new Note();
-
-        when(noteService.updateNote(1L, updateNote)).thenReturn(null);
-        mockMvc.perform(get("/api/notes/1", exceptionParam))
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
-                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
-    }
-
-    @Test
-    public void findAllNoteTestReturnOK() throws Exception {
-        Note note1 = new Note();
-        note1.setDateNote(LocalDateTime.of(4, 5, 7, 5, 9));
-        note1.setId(22L);
-        note1.setPatientId(32L);
-        note1.setPatientLastName("Macron");
-        note1.setPatientFirstName("Bernard");
-        note1.setNote("Notes du patient 1");
-
-        Note note2 = new Note();
-        note2.setDateNote(LocalDateTime.of(1, 1, 1, 1, 1));
-        note2.setId(26L);
-        note2.setPatientId(29L);
-        note2.setPatientLastName("Boulanger");
-        note2.setPatientFirstName("Xavier");
-        note2.setNote("Notes du patient 2");
-
-        List<Note> noteList = new ArrayList<>();
-        noteList.add(note1);
-        noteList.add(note2);
-
-        when(noteService.findAllNote()).thenReturn(noteList).thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(get("/api/notes")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$..*").isNotEmpty())
-                .andExpect(jsonPath("$.[0].note").value("Notes du patient 1"))
-                .andExpect(jsonPath("$.[1].note").value("Notes du patient 2"));
-    }
-
-    @Test
-    public void findAllNoteTestReturnNull() throws Exception {
-        List<Note> noteList = new ArrayList<>();
-        when(noteService.findAllNote()).thenReturn(noteList);
-        mockMvc.perform(get("/api/notes", exceptionParam)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
-                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
-    }
-
-    @Test
-    public void deleteNoteByIdTestReturnOK() throws Exception {
-        when(noteService.deleteNoteById(26L)).thenReturn(true).thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(delete("/api/notes/26")
-        ).andExpect(status().isOk());
-    }
-
-    @Test
-    public void deleteNoteByIdTestReturnNull() throws Exception {
-        when(noteService.deleteNoteById(0L)).thenReturn(false);
-        mockMvc.perform(delete("/api/notes/0", exceptionParam)
-        ).andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFoundException))
-                .andExpect(result -> assertEquals(404, result.getResponse().getStatus()));
-    }
-
-   /* public class ObjectToJsonUtil {
-        private byte[] convertObjectToJsonBytes(Object object)
-                throws IOException {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-            JavaTimeModule module = new JavaTimeModule();
-            mapper.registerModule(module);
-
-            return mapper.writeValueAsBytes(object);
-        }
-
-    }*/
 
 }
+

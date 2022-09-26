@@ -35,9 +35,9 @@ public class RapportService {
         this.patientProximity = patientProximity;
     }
 
-    public Patient getPatientInfo(Long patientId) {
+    public Patient getPatientInfo(Long id) {
         try {
-            return patientProximity.findPatientById(patientId).getBody();
+            return patientProximity.findPatientById(id).getBody();
         } catch (HystrixBadRequestException he) {
             if (he instanceof FeignBadResponseWrapper) {
                 return null;
@@ -47,9 +47,9 @@ public class RapportService {
         }
     }
 
-    public List<Note> getPatientNote(Long patientId) {
+    public List<Note> getPatientNote(String patientId) {
         try {
-            return noteProximity.findByPatientId(patientId).getBody();
+            return noteProximity.findNoteById(patientId);
         } catch (HystrixBadRequestException he) {
             if (he instanceof FeignBadResponseWrapper) {
                 return null;
@@ -59,8 +59,9 @@ public class RapportService {
         }
     }
 
-    public String calculateRiskByPatientId(Long patientId) {
-        Patient patientInfo = getPatientInfo(patientId);
+    public String calculateRiskByPatientId(String patientId, Long id) {
+
+        Patient patientInfo = getPatientInfo(id);
         List<Note> patientNoteList = getPatientNote(patientId);
         if (patientId == null || patientInfo == null || patientNoteList == null) return null;
 
