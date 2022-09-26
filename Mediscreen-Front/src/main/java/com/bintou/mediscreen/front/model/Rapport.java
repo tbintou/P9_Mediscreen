@@ -1,6 +1,5 @@
 package com.bintou.mediscreen.front.model;
 
-import com.bintou.mediscreen.rapport.model.Status;
 import lombok.*;
 
 @Getter
@@ -18,5 +17,4 @@ public class Rapport {
 
     private Long age;
 
-    private Status status;
 }

@@ -38,7 +38,7 @@ public class NoteRepositoryTest {
         Assertions.assertEquals(note.getPatientLastName(), "Jack");
 
         // FindByPatientId
-        Integer patientId = 7;
+        Integer patientId = 2;
         note.setPatientId(patientId);
         List<Note> notePatientList = noteRepository.findByPatientId(patientId);
         Assertions.assertTrue(notePatientList.size() > 0);
@@ -48,12 +48,6 @@ public class NoteRepositoryTest {
         note.setId(id);
         Optional<Note> noteOptional = noteRepository.findById(id);
         Assertions.assertTrue(noteOptional.isPresent());
-
-        /*FindByLastName
-        String lastName = "Jack";
-        String firstName = "Test";
-        List<Note> noteListByLastNameAndFirstName = noteRepository.findByPatientLastNameAndPatientFirstName(lastName, firstName);
-        Assertions.assertTrue(noteListByLastNameAndFirstName.size() > 0);*/
 
         // Update
         note.setPatientLastName("TestJean");

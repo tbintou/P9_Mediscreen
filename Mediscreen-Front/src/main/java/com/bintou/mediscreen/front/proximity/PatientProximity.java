@@ -1,17 +1,14 @@
 package com.bintou.mediscreen.front.proximity;
 
 import com.bintou.mediscreen.front.model.Patient;
-import com.bintou.mediscreen.rapport.config.FeignPropagateBadRequestsConfiguration;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@FeignClient(name = "mediscreen", url = "${mediscreen.serviceUrl:http://localhost:8081}", configuration = FeignPropagateBadRequestsConfiguration.class)
+@FeignClient(name = "mediscreen", url = "${mediscreen.serviceUrl:http://localhost:8081}")
 public interface PatientProximity {
 
     @PostMapping("/api/patients/valid")

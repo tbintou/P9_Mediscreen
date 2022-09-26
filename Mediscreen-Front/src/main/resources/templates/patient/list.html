@@ -59,16 +59,16 @@
                         <td style="width: 2%" th:text="${patients.id}"></td>
                         <td style="width: 8%" th:text="${patients.lastName}"></td>
                         <td style="width: 7%" th:text="${patients.firstName}"></td>
-                        <td style="width: 8%" th:text="${patients.birthDate}"></td>
-                        <td style="width: 10%" th:text="${patients.adress}"></td>
+                        <td style="width: 13%" th:text="${patients.birthDate}"></td>
+                        <td style="width: 11%" th:text="${patients.adress}"></td>
                         <td style="width: 8%" th:text="${patients.phone}"></td>
                         <td style="width: 1%" th:text="${patients.gender}"></td>
-                        <td style="width: 20%" class="text-center">
+                        <td style="width: 14%" class="text-center">
                             <div class="btn-toolbar">
                                 <a th:href="@{/api/patients/patient/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary bg-warning btn-sm mr-2 mb-2 font-weight-bold text-dark btn btn-outline-light">Modifier</button></a>
                                 <a th:href="@{/api/patients/patientId/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm bg-danger mr-2 mb-2 font-weight-bold btn btn-outline-light">Supprimer</button></a>
                                 <a th:href="@{/api/notes/list/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm bg-success mr-2 mb-2 font-weight-bold btn btn-outline-light">Notes</button></a>
-                                <!--   <a th:href="@{/api/rapports/patient/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm mr-2 mb-2 font-weight-bold btn btn-outline-light">Rapport</button></a>-->
+                                <a th:href="@{/api/rapport/{id}(id=${patients.id})}"><button type="button" class="btn btn-primary btn-sm mr-2 mb-2 font-weight-bold btn btn-outline-light">Rapport</button></a>
                             </div>
                         </td>
                     </tr>

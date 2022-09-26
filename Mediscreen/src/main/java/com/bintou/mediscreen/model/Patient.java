@@ -36,7 +36,7 @@ public class Patient {
 
     @Past(message = "Veuillez entrer une date de naissance valide")
     @NotNull(message = "La date de naissance est obligatoire")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "birthDate")
     private LocalDate birthDate;
 

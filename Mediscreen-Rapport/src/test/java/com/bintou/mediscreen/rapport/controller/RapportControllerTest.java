@@ -1,42 +1,70 @@
 package com.bintou.mediscreen.rapport.controller;
 
-import com.bintou.mediscreen.rapport.service.RapportService;
+import com.bintou.mediscreen.rapport.MediscreenRapportApplication;
+import com.bintou.mediscreen.rapport.model.Patient;
+import com.bintou.mediscreen.rapport.model.Rapport;
+import com.bintou.mediscreen.rapport.service.RapportServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.time.LocalDate;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@Slf4j
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.MOCK, classes={ MediscreenRapportApplication.class })
 public class RapportControllerTest {
+    @MockBean
+    private RapportServiceImpl rapportService;
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private RapportService rapportService;
+    @Autowired
+    private WebApplicationContext context;
 
-    @Test
-    public void getRiskAssessmentTest() throws Exception {
-        Long patientId = 20L;
-        when(rapportService.calculateRiskByPatientId(patientId)).thenReturn("Aucun risque (None)");
-        mockMvc.perform(get("/api/rapports/patient/20"))
-                .andExpect(status().isOk());
+
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
     @Test
-    public void getRiskAssessmentReturn404Test() throws Exception {
-        Long patientId = 1L;
-        when(rapportService.calculateRiskByPatientId(patientId)).thenReturn(null);
-        mockMvc.perform(get("/api/rapports/patient/20"))
-                .andExpect(status().isBadRequest());
+    public void getPatientRapportTest() throws Exception {
+
+        Rapport rapport = new Rapport(
+                new Patient(1L, "Ferguson", "Lucas",
+                        LocalDate.of(1968,06,22), "M", "2 Warren Street ", "387-866-1399"),
+                0, "BORDELINE");
+
+        when(rapportService.getPatientRapport(1L)).thenReturn(rapport);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/rapport/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse()
+                .getContentAsString();
+
+        assertThat(content).contains("BORDELINE");
+        verify(rapportService).getPatientRapport(1L);
     }
+
 }
