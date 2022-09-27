@@ -67,7 +67,7 @@ public class NoteController {
 
     @GetMapping("/notes/list/{id}")
     @ApiOperation(value = "Afficher la liste des notes des patients")
-    public List<NoteDTO> findAllNote(@PathVariable("id") final Integer patientId) {
+    public List<NoteDTO> findAllNote(@PathVariable("id") final Long patientId) {
 
         log.debug("Méthode GET /api/notes/list/{id}");
 

@@ -1,8 +1,8 @@
 package com.bintou.mediscreen.front.proximity;
 
-import com.bintou.mediscreen.rapport.model.Rapport;
+
+import com.bintou.mediscreen.front.model.Rapport;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 

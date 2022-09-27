@@ -91,7 +91,7 @@ public class NoteServiceTest {
     @Test
     public void findAllNoteTest() {
         int id = 2;
-        List<NoteDTO> patientList = noteService.findAllNote(2);
+        List<NoteDTO> patientList = noteService.findAllNote(2L);
         assertTrue(patientList.size() > 0);
     }
 

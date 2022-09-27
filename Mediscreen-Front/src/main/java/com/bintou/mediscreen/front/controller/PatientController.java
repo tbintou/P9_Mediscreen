@@ -34,46 +34,49 @@ public class PatientController {
     }
 
     @RolesAllowed("USER")
-    @GetMapping("/patients/patient")
-    public String addPatientForm(Patient patient) {
+    @GetMapping("/patient")
+    public String addPatientForm(Model model) {
+        model.addAttribute("patient", new Patient());
         return "patient/add";
     }
 
     @RolesAllowed("USER")
-    @PostMapping("/patient/valid")
+    @PostMapping("/patient")
     public String validatePatient(@Valid Patient patient, BindingResult result, Model model) {
 
-        if(!result.hasErrors()) {
-            patientProximity.createdPatient(patient);
-            model.addAttribute("patient", patientProximity.findAllPatients());
-            return "redirect:/api/patients";
+        if(result.hasErrors()) {
+            return "patient/add";
         }
-        return "patient/add";
+        this.patientProximity.createdPatient(patient);
+        return "redirect:/api/patients";
     }
 
     @RolesAllowed("USER")
-    @GetMapping("/patients/patient/{id}")
-    public String updatePatientForm(@PathVariable("id") Long id, Patient patient, Model model) {
-        patient = patientProximity.findPatientById(id);
+    @GetMapping("/patient/{id}")
+    public String updatePatientForm(@PathVariable("id") Long id, Model model) {
+
+        log.debug(" *** Méthode - GET /api/patient/{id} : {}", id);
+
+        Patient patient = this.patientProximity.findPatientById(id);
         model.addAttribute("patient", patient);
+
+        log.info(" *** Page de mise à jour du patient a été chargée avec succès");
+
         return "patient/update";
     }
 
-    @RolesAllowed("ADMIN")
-    @PostMapping("/patients/patient/{id}")
-    public String updatePatient(@PathVariable("id") Long id, @Valid Patient patient, BindingResult result, Model model) {
+    @PostMapping("/patient/{id}")
+    public String updatePatient(@PathVariable("id") Long id, @Valid Patient patient, BindingResult result) {
 
-        log.debug(" *** Méthode - POST /api/patients/patient/{id} : {}", id);
-        if (!result.hasErrors()) {
-            this.patientProximity.updatePatient(id, patient);
-
-            model.addAttribute("patient", patientProximity.findAllPatients());
-            log.info(" *** Le patient a été mis à jour avec succès");
-
-            return "redirect:/api/patients";
-
+        log.debug(" *** Méthode - POST /api/patient/{id} : {}", id);
+        if (result.hasErrors()) {
+            return "patient/update";
         }
-        return "patient/update";
+        this.patientProximity.updatePatient(id, patient);
+
+        log.info(" *** Le patient a été mis à jour avec succès");
+
+        return "redirect:/api/patients";
     }
 
     @RolesAllowed("USER")

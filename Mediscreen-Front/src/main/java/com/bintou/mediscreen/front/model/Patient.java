@@ -3,9 +3,8 @@ package com.bintou.mediscreen.front.model;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -29,7 +28,7 @@ public class Patient {
     @Past(message = "Veuillez entrer une date de naissance valide")
     @NotNull(message = "La date de naissance est obligatoire")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @NotNull(message = "Le genre du sexe est obligatoire")
     private String gender;
@@ -37,6 +36,7 @@ public class Patient {
     private String adress;
 
     private String phone;
+
 
 }
 

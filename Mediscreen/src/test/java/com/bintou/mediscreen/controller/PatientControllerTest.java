@@ -67,7 +67,7 @@ public class PatientControllerTest {
         patient.setPhone("");
 
         when(mockPatientService.savePatient(any(Patient.class))).thenReturn(patient);
-        mockMvc.perform(post("/api/patients/valid")
+        mockMvc.perform(post("/api/patient")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
                /* .andExpect(status().isCreated());
@@ -166,7 +166,7 @@ public class PatientControllerTest {
         updatePatient.setPhone("5111-222-6666");
 
         when(mockPatientService.updatePatient(4L, updatePatient)).thenReturn(updatePatient);
-        mockMvc.perform(put("/api/patients/patient/4")
+        mockMvc.perform(put("/api/patient/4")
                         .contentType(MediaType.APPLICATION_JSON)
                        // .content(asJsonString(updatePatient))
                         .accept(MediaType.APPLICATION_JSON));
@@ -187,7 +187,7 @@ public class PatientControllerTest {
         updatedPatient.setPhone("5111-222-6666");
 
         when(mockPatientService.updatePatient(33L, updatedPatient)).thenReturn(updatedPatient);
-        mockMvc.perform(put("/api/patients/patient/33")
+        mockMvc.perform(put("/api/patient/33")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -207,7 +207,7 @@ public class PatientControllerTest {
         updatePatient.setPhone("5111-222-6666");
 
         when(mockPatientService.updatePatient(0L, updatePatient)).thenReturn(updatePatient);
-        mockMvc.perform(put("/api/patients/patient/0")
+        mockMvc.perform(put("/api/patient/0")
                         .contentType(MediaType.APPLICATION_JSON));
                 //.andExpect(status().isBadRequest());
     }
@@ -265,10 +265,10 @@ public class PatientControllerTest {
 
     @Test
     public void findPatientByIdNotFound() throws Exception {
-        when(mockPatientService.findPatientById(198L)).thenReturn(null);
-        mockMvc.perform(get("/api/patient/198")
+        when(mockPatientService.findPatientById(1L)).thenReturn(null);
+        mockMvc.perform(get("/api/patients/patient/1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

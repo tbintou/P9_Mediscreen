@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "mediscreen-note", url = "${note.serviceUrl}")
+@FeignClient(name = "mediscreen-note", url = "${note.serviceUrl:http://localhost:8082}")
 public interface NoteProximity {
 
     @GetMapping("/api/notes/patient/{patientId}")

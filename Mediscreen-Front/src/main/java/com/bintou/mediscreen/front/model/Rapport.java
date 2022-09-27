@@ -9,12 +9,10 @@ import lombok.*;
 @AllArgsConstructor
 public class Rapport {
 
-    private String firstName;
+    private Patient patient;
 
-    private String lastName;
+    private int patientAge;
 
-    private String gender;
-
-    private Long age;
+    private String riskDiabeteLevel;
 
 }

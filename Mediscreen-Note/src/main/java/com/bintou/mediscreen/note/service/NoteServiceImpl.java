@@ -40,7 +40,7 @@ public class NoteServiceImpl implements NoteService {
         return noteMapper.toNoteDTO(note);
     }
 
-    public List<NoteDTO> findAllNote(final Integer patientId) {
+    public List<NoteDTO> findAllNote(final Long patientId) {
 
         List<Note> notes = noteRepository.findByPatientId(patientId);
 

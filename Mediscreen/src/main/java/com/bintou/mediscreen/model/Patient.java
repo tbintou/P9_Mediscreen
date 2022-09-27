@@ -2,12 +2,10 @@ package com.bintou.mediscreen.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter

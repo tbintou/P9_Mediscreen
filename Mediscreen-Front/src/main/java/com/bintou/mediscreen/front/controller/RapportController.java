@@ -1,7 +1,7 @@
 package com.bintou.mediscreen.front.controller;
 
+import com.bintou.mediscreen.front.model.Rapport;
 import com.bintou.mediscreen.front.proximity.RapportProximity;
-import com.bintou.mediscreen.rapport.model.Rapport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,8 +26,11 @@ public class RapportController {
     @GetMapping("/rapport/{id}")
     public String getPatientRapport(@PathVariable("id") final Long patientId, final Model model) {
 
-        Rapport rapport = this.rapportProximity.getPatientRapport(patientId);
-        model.addAttribute("rapport", rapport);
+        log.debug(" *** Méthode - GET /api/rapport/{id}");
+        model.addAttribute("patientId", patientId);
+        model.addAttribute("rapport", this.rapportProximity.getPatientRapport(patientId));
+
+        log.debug(" *** Rapport d'évaluation retourné avec succès");
 
         return "rapport/rapport";
     }

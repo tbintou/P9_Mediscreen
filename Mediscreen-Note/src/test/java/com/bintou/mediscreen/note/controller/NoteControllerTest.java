@@ -73,7 +73,7 @@ class NoteControllerTest {
 
         noteDTO = new NoteDTO();
         noteDTO.setId("632d9950d35a776550adfa4d");
-        noteDTO.setPatientId(2);
+        noteDTO.setPatientId(2L);
         noteDTO.setDateNote(date);
         noteDTO.setNote("note");
 
@@ -91,7 +91,7 @@ class NoteControllerTest {
 
         NoteDTO noteDTO = new NoteDTO();
         noteDTO.setId("632d9950d35a776550adfa4d");
-        noteDTO.setPatientId(2);
+        noteDTO.setPatientId(2L);
         noteDTO.setDateNote(date);
         noteDTO.setNote("note");
 
@@ -114,17 +114,17 @@ class NoteControllerTest {
 
         NoteDTO noteDTO1 = new NoteDTO();
         noteDTO1.setId("632d9950d35a776550adfa4d");
-        noteDTO1.setPatientId(2);
+        noteDTO1.setPatientId(2L);
         noteDTO1.setDateNote(date);
         noteDTO1.setNote("note1");
 
         NoteDTO noteDTO2 = new NoteDTO();
         noteDTO2.setId("632d9b1777f6c14ebd00e4ee");
-        noteDTO2.setPatientId(2);
+        noteDTO2.setPatientId(2L);
         noteDTO2.setDateNote(date);
         noteDTO2.setNote("note2");
 
-        when(noteService.findAllNote(2)).thenReturn(Arrays
+        when(noteService.findAllNote(2L)).thenReturn(Arrays
                 .asList(noteDTO1, noteDTO2));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -135,7 +135,7 @@ class NoteControllerTest {
 
         String content = result.getResponse().getContentAsString();
 
-        verify(noteService).findAllNote(2);
+        verify(noteService).findAllNote(2L);
         assertThat(content).contains("note1", "note2");
     }
 
@@ -144,7 +144,7 @@ class NoteControllerTest {
 
         NoteDTO noteDTO = new NoteDTO();
         noteDTO.setId("632d9b1777f6c14ebd00e4ee");
-        noteDTO.setPatientId(2);
+        noteDTO.setPatientId(2L);
         noteDTO.setDateNote(date);
         noteDTO.setNote("note updated");
 

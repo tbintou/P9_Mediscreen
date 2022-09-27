@@ -32,7 +32,7 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @PostMapping("/patients/valid")
+    @PostMapping("/patient")
     @ApiOperation("Créer un nouveau patient")
     public ResponseEntity<Object> createdPatient(@RequestBody @Valid Patient patient, BindingResult bindingResult) throws ValidationErrorHandlerController {
         ResponseEntity<Object> message = getBindingResultErrors(bindingResult);
@@ -66,7 +66,7 @@ public class PatientController {
         return new ResponseEntity<>(patientList, HttpStatus.OK);
     }
 
-    @PutMapping("/patients/patient/{id}")
+    @PutMapping("/patient/{id}")
     @ApiOperation("Mise à jour les données du patient par son id")
     public ResponseEntity<Object> updatePatient(@PathVariable(value = "id") Long id, @Valid @RequestBody Patient patient, BindingResult result) throws ValidationErrorHandlerController {
         ResponseEntity<Object> messages = getBindingResultErrors(result);

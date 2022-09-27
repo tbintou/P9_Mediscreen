@@ -18,7 +18,7 @@ public class NoteDTO {
 
     private String id;
 
-    private Integer patientId;
+    private Long patientId;
 
     private String patientLastName;
 
@@ -28,10 +28,10 @@ public class NoteDTO {
 
     private String note;
 
-    public NoteDTO(String id, Integer patientId, LocalDate dateNote, String note) {
+    public NoteDTO(String id, Long patientId, LocalDate dateNote, String note) {
 
     }
-    public NoteDTO(String id, Integer patientId, String patientLastName, String patientFirstName, LocalDate dateNote, String note) {
+    public NoteDTO(String id, Long patientId, String patientLastName, String patientFirstName, LocalDate dateNote, String note) {
         this.id = id;
         this.patientId = patientId;
         this.patientLastName = patientLastName;

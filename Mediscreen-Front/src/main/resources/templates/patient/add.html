@@ -36,7 +36,7 @@
             </div>
             <br/>
             <div class="row">
-                <form action="#" th:action="@{/api/patient/valid}" th:object="${patient}" method="post" class="form-horizontal"
+                <form action="#" th:action="@{/api/patient}" th:object="${patient}" method="post" class="form-horizontal"
                       style="width: 100%">
                     <div th:if="${param.error}">
                         <div class="alert alert-info">L'enregistrement a échoué. Ce patient est peut-être déjà enregistré</div>
@@ -58,7 +58,7 @@
                     <div class="form-group">
                         <label for="birthDate" class="col-sm-2 control-label">Date de naissance</label>
                         <div class="col-sm-10">
-                            <input type="text" th:field="*{birthDate}" id="birthDate" placeholder="yyyy-MM-dd" class="col-4">
+                            <input type="date" th:field="*{birthDate}" id="birthDate" placeholder="dd/MM/yyyy" class="col-4">
                             <p class="text-danger" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
                         </div>
                     </div>

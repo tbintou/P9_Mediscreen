@@ -11,9 +11,9 @@ import java.util.List;
 @FeignClient(name = "mediscreen", url = "${mediscreen.serviceUrl:http://localhost:8081}")
 public interface PatientProximity {
 
-    @PostMapping("/api/patients/valid")
+    @PostMapping("/api/patient")
     @ApiOperation("Créer un nouveau patient")
-    ResponseEntity<Object> createdPatient(Patient patient);
+    Patient createdPatient(Patient patient);
 
     @GetMapping("/api/patients/patient/{id}")
     @ApiOperation("Chercher un patient par son id")
@@ -23,9 +23,9 @@ public interface PatientProximity {
     @ApiOperation("Chercher un patient par son nom de famille")
     List<Patient> findPatientByLastNameAndFirstName(@RequestParam(value = "lastName") String lastName, @RequestParam(value = "firstName") String firstName);
 
-    @PutMapping("/api/patients/patient/{id}")
+    @PutMapping("/api/patient/{id}")
     @ApiOperation("Mise à jour les données du patient par son id")
-    Boolean updatePatient(@PathVariable(value = "id") Long id, Patient patient);
+    Patient updatePatient(@PathVariable(value = "id") Long id, Patient patient);
 
     @GetMapping("/api/patients")
     @ApiOperation("Chercher la liste des patients")

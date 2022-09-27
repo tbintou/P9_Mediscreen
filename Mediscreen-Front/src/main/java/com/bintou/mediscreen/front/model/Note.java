@@ -26,7 +26,7 @@ public class Note {
     @NotBlank(message = "Le champ note est obligatoire")
     private String note;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateNote;
 
 }

@@ -12,7 +12,7 @@ public interface NoteService {
 
     NoteDTO findNoteById(String noteId);
 
-    List<NoteDTO> findAllNote(Integer patientId);
+    List<NoteDTO> findAllNote(Long patientId);
 
     NoteDTO updateNote(String noteId, NoteDTO noteDTO);
 

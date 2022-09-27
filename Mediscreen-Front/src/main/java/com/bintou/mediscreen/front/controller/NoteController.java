@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Controller
@@ -43,14 +44,13 @@ public class NoteController {
     }
 
     @PostMapping("/note/valid")
-    public String validate(@Valid Note note, BindingResult result, Model model, String id) {
+    public String validate(@Valid Note note, BindingResult result, String id) {
 
         log.debug(" *** Méthode - POST /api/note/valid");
 
         if (!result.hasErrors()) {
             this.noteProximity.createdNote(note);
 
-            model.addAttribute("note", noteProximity.findNoteById(id));
             log.info(" *** La note a été ajoutée avec succès");
 
             return "redirect:/api/notes/list/" + note.getPatientId();
@@ -76,14 +76,14 @@ public class NoteController {
 
         log.debug(" *** Méthode - POST /api/note/{id}");
 
-        if (!result.hasErrors()) {
+        if (result.hasErrors()) {
             return "note/update";
         } else {
             this.noteProximity.updateNotes(noteId, note);
 
             log.info(" *** Les notes ont été mise à jour avec succès");
 
-            return "redirect:/api/notes/list/" + note.getId();
+            return "redirect:/api/notes/list/" + note.getPatientId();
         }
     }
 
