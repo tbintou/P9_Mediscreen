@@ -82,11 +82,11 @@ public class PatientController {
     @RolesAllowed("USER")
     @GetMapping("/patients/patient/family")
     public String findPatientByLastNameAndFirstName(@RequestParam(value = "lastName") String lastName, @RequestParam(value = "firstName") String firstName, Model model) {
-        List<Patient> patientList = patientProximity.findPatientByLastNameAndFirstName(lastName, firstName);
-        if (patientList.isEmpty()) {
-            throw new IllegalArgumentException("Impossible de trouver le(s) patient(s) avec ce nom de famille : " + lastName);
+        List<Patient> patients = patientProximity.findPatientByLastNameAndFirstName(lastName, firstName);
+        if (patients.isEmpty()) {
+            throw new IllegalArgumentException("Impossible de trouver le(s) patient(s) avec ce nom de famille : " + lastName + " et ce prénom : " + firstName);
         }
-        model.addAttribute("patients", patientList);
+        model.addAttribute("patients", patients);
         return "redirect:/api/patients";
     }
 

@@ -40,16 +40,16 @@
                <input type="hidden" th:field="*{patientId}" id="patientId">
 
                <div class="form-group">
-                  <label for="patientLastName" class="col-sm-2 control-label">patientLastName</label>
+                  <label for="patientLastName" class="col-sm-2 control-label">Nom de famille</label>
                   <div class="col-sm-10">
-                     <input type="text" th:field="*{patientLastName}" id="patientLastName" placeholder="patientLastName" class="col-4">
+                     <input type="text" th:field="*{patientLastName}" id="patientLastName" placeholder="Nom de famille" class="col-4">
                      <p class="text-danger" th:if="${#fields.hasErrors('patientLastName')}" th:errors="*{patientLastName}"></p>
                   </div>
                </div>
                <div class="form-group">
-                  <label for="patientFirstName" class="col-sm-2 control-label">patientFirstName</label>
+                  <label for="patientFirstName" class="col-sm-2 control-label">Prénom</label>
                   <div class="col-sm-10">
-                     <input type="text" th:field="*{patientFirstName}" id="patientFirstName" placeholder="patientFirstName" class="col-4">
+                     <input type="text" th:field="*{patientFirstName}" id="patientFirstName" placeholder="Prénom" class="col-4">
                      <p class="text-danger" th:if="${#fields.hasErrors('patientFirstName')}" th:errors="*{patientFirstName}"></p>
                   </div>
                </div>
