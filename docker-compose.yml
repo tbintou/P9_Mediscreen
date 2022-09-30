@@ -13,6 +13,9 @@ services:
     volumes:
       - C:/Users/binto/Desktop/Docker_Volumes/mysqldb:/var/lib/mysql
 
+    networks:
+      - mediscreen-app
+
   mediscreen:
     depends_on:
       - mysqldb
@@ -39,6 +42,9 @@ services:
       stdin_open: true
       tty: true
 
+    networks:
+      - mediscreen-app
+
   mongodb:
     image: mongo:4
     container_name: mongodb
@@ -47,6 +53,9 @@ services:
     volumes:
       - C:/Users/binto/Desktop/Docker_Volumes/mongodb:/data/db
 
+    networks:
+      - mediscreen-app
+
   note:
     depends_on:
       - mongodb
@@ -54,25 +63,29 @@ services:
     container_name: mediscreen-note
     ports:
       - "8082:8082"
-    networks:
-      - default
+
     environment:
       - "spring_data_mongodb_host=mongodb"
       - "spring.data.mongodb.database=mediscreen_note"
       - "front.serviceUrl=http://mediscreen-front:8080"
       - "rapport.serviceUrl=http://mediscreen-rapport:8083"
 
+    networks:
+      - mediscreen-app
+
   rapport:
     image: mediscreen-rapport:latest
     container_name: mediscreen-rapport
     ports:
       - "8083:8083"
-    networks:
-      - default
+
     environment:
       - "front.serviceUrl=http://mediscreen-front:8080"
       - "patient.serviceUrl=http://mediscreen:8081"
       - "note.serviceUrl=http://mediscreen-note:8082"
+
+    networks:
+      - mediscreen-app
 
   front:
     depends_on:
@@ -86,13 +99,26 @@ services:
     env_file: ./.env
     ports:
       - "8080:8080"
+
     environment:
-      - "patient.serviceUrl=http://mediscreen:8081"
-      - "note.serviceUrl=http://mediscreen-note:8082"
-      - "rapport.serviceUrl=http://mediscreen-rapport:8083"
+      - "spring.datasource.url=jdbc:mysql://mysqldb:3306/mediscreen?useSSL=false"
+      - "spring.datasource.username=$MYSQLDB_USER"
+      - "spring.datasource.password=$MYSQLDB_ROOT_PASSWORD"
+      - "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect"
+      - "spring.jpa.hibernate.ddl-auto=update"
+      - "mediscreen.serviceUrl:http://localhost:8081"
+      - "note.serviceUrl:http://localhost:8082"
+      - "rapport.serviceUrl:http://localhost:8083"
 
     stdin_open: true
     tty: true
+
+    networks:
+      - mediscreen-app
+
+networks:
+  mediscreen-app:
+      driver: bridge
 
 volumes:
   mysqldb:
