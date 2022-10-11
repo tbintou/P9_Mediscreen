@@ -41,12 +41,12 @@ public class NoteServiceTest {
     public void init() throws ParseException {
 
         note.setId("632d7cae46a20434f65d972e");
-        note.setPatientId(2);
+        note.setPatientId(2L);
         note.setDateNote(date);
         note.setNote("note");
 
         noteDTO.setId("632d7cae46a20434f65d972e");
-        noteDTO.setPatientId(2);
+        noteDTO.setPatientId(2L);
         noteDTO.setDateNote(date);
         noteDTO.setNote("note 1");
         noteService.saveNote(noteDTO);
@@ -70,23 +70,13 @@ public class NoteServiceTest {
 
     @Test
     public void findNoteByIdTest() {
-        String id = "632d84a1b2b02327f3e9be47";
+        String id = "634096ee00afbe4174a3595b";
         noteService.findNoteById(id);
 
         assertEquals(2, note.getPatientId());
         assertEquals(date, note.getDateNote());
         assertEquals("note", note.getNote());
     }
-
-   /* @Test
-    public void findNoteByIdReturnNullTest() {
-        String id = "noteId";
-
-        Mockito.when(noteService.findNoteById(id)).thenThrow(new ResourceNotFoundException("La note avec cet id n'existe pas"));
-        assertTrue(true);
-        //assertEquals(id, "La note avec cet id n'existe pas");
-        //assertThrows(ResourceNotFoundException.class,this::findNoteByIdReturnNullTest);
-    }*/
 
     @Test
     public void findAllNoteTest() {

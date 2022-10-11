@@ -41,10 +41,10 @@ public class PatientRepositoryTest {
         assertEquals(patient.getLastName(), "TestNone");
 
         //FindById
-        Long id = 7L;
+        Long id = 8L;
         patient.setId(id);
         Optional<Patient> patientOptional = patientRepository.findById(id);
-        assertTrue(patientOptional.isEmpty());
+        assertTrue(patientOptional.isPresent());
 
         //FindByLastNameAndFirstName
         String lastName = "TestNone";

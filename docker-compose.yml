@@ -39,8 +39,8 @@ services:
           }'
       volumes:
          -/my/project/dir:/app
-      stdin_open: true
-      tty: true
+      #stdin_open: true
+      #tty: true
 
     networks:
       - mediscreen-app

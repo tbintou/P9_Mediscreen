@@ -21,13 +21,13 @@ public class NoteMapperTest {
     public void noteDOTest() {
 
         Note expectedNote = new Note();
-        expectedNote.setPatientId(2);
+        expectedNote.setPatientId(2L);
         expectedNote.setDateNote(date);
         expectedNote.setNote("note");
 
         NoteDTO noteDTO = new NoteDTO();
         noteDTO.setId("patId");
-        noteDTO.setPatientId(2);
+        noteDTO.setPatientId(2L);
         noteDTO.setDateNote(date);
         noteDTO.setNote("note");
 
@@ -43,13 +43,13 @@ public class NoteMapperTest {
 
         NoteDTO expectedNoteDTO = new NoteDTO();
         expectedNoteDTO.setId("patId");
-        expectedNoteDTO.setPatientId(2);
+        expectedNoteDTO.setPatientId(2L);
         expectedNoteDTO.setDateNote(date);
         expectedNoteDTO.setNote("note");
 
         Note note = new Note();
         note.setId("patId");
-        note.setPatientId(2);
+        note.setPatientId(2L);
         note.setDateNote(date);
         note.setNote("note");
 

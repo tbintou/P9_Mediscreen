@@ -19,7 +19,7 @@ public class NoteDtoTest {
     void init() {
         noteDto = new NoteDTO();
         noteDto.setId("632d9950d35a776550adfa4d");
-        noteDto.setPatientId(2);
+        noteDto.setPatientId(2L);
         noteDto.setDateNote(date);
         noteDto.setNote("note");
     }
@@ -44,7 +44,7 @@ public class NoteDtoTest {
         LocalDate newDate = LocalDate.of(2021,12,31);
 
         noteDto.setId("newId");
-        noteDto.setPatientId(4);
+        noteDto.setPatientId(4L);
         noteDto.setDateNote(newDate);
         noteDto.setNote("newNote");
 
